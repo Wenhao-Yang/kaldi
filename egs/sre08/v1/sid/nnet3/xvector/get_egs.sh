@@ -17,17 +17,24 @@
 # also the validation examples used for diagnostics), and puts them in
 # separate archives.
 
+# egs 由 data chunk 和 speaker label
+# 每个archive有不同的chunk大小
+# 脚本用来生成网络的训练样本
 
 # Begin configuration section.
 cmd=run.pl
 # each archive has data-chunks off length randomly chosen between
 # $min_frames_per_eg and $max_frames_per_eg.
+# 每个ark都有随机个在min-max之间帧长度的chunk
+
 min_frames_per_chunk=50
 max_frames_per_chunk=300
 frames_per_iter=10000000 # target number of frames per archive.
+                         # 每个iteration的frame数目
 
 frames_per_iter_diagnostic=100000 # have this many frames per archive for
                                    # the archives used for diagnostics.
+                                  # 用于诊断的帧？
 
 num_diagnostic_archives=3  # we want to test the training likelihoods
                            # on a range of utterance lengths, and this number controls
@@ -40,6 +47,7 @@ compress=true   # set this to false to disable compression (e.g. if you want to 
 num_heldout_utts=100     # number of utterances held out for training subset
 
 num_repeats=1 # number of times each speaker repeats per archive
+              # 每个说话人在每个ark中重复次数
 
 stage=0
 nj=6         # This should be set to the maximum number of jobs you are
@@ -85,6 +93,7 @@ for f in $data/utt2num_frames $data/feats.scp ; do
   [ ! -f $f ] && echo "$0: expected file $f" && exit 1;
 done
 
+# feat的维度
 feat_dim=$(feat-to-dim scp:$data/feats.scp -) || exit 1
 
 mkdir -p $dir/info $dir/info $dir/temp
@@ -99,12 +108,17 @@ cp $data/utt2num_frames $dir/temp/utt2num_frames
 
 if [ $stage -le 0 ]; then
   echo "$0: Preparing train and validation lists"
+  # 从train集合中选择一部分（$num_heldout_utts数目的句子, 默认100）用来validation
   # Pick a list of heldout utterances for validation egs
+
   awk '{print $1}' $data/utt2spk | utils/shuffle_list.pl | head -$num_heldout_utts > $temp/valid_uttlist || exit 1;
   # The remaining utterances are used for training egs
   utils/filter_scp.pl --exclude $temp/valid_uttlist $temp/utt2num_frames > $temp/utt2num_frames.train
   utils/filter_scp.pl $temp/valid_uttlist $temp/utt2num_frames > $temp/utt2num_frames.valid
+  
   # Pick a subset of the training list for diagnostics
+  # 选择训练列表的一部分（$num_heldout_utts默认为100的句子）用作作diagnostics, 与train集合不重合
+
   awk '{print $1}' $temp/utt2num_frames.train | utils/shuffle_list.pl | head -$num_heldout_utts > $temp/train_subset_uttlist || exit 1;
   utils/filter_scp.pl $temp/train_subset_uttlist <$temp/utt2num_frames.train > $temp/utt2num_frames.train_subset
   # Create a mapping from utterance to speaker ID (an integer)
@@ -115,6 +129,7 @@ if [ $stage -le 0 ]; then
   utils/filter_scp.pl $temp/utt2num_frames.train_subset $temp/utt2int > $temp/utt2int.train_subset
 fi
 
+# spk到int的类标签
 num_pdfs=$(awk '{print $2}' $temp/utt2int | sort | uniq -c | wc -l)
 # The script assumes you've prepared the features ahead of time.
 feats="scp,s,cs:utils/filter_scp.pl $temp/ranges.JOB $data/feats.scp |"
@@ -122,10 +137,12 @@ train_subset_feats="scp,s,cs:utils/filter_scp.pl $temp/train_subset_ranges.1 $da
 valid_feats="scp,s,cs:utils/filter_scp.pl $temp/valid_ranges.1 $data/feats.scp |"
 
 # first for the training data... work out how many archives.
+# train和train_subset集合的所有帧数=加上所有utt2frames的帧数
 num_train_frames=$(awk '{n += $2} END{print n}' <$temp/utt2num_frames.train)
 num_train_subset_frames=$(awk '{n += $2} END{print n}' <$temp/utt2num_frames.train_subset)
-
 echo $num_train_frames >$dir/info/num_frames
+
+# num_train_archives=所有帧数*重复次数/每个iteraion的帧数（+1）
 num_train_archives=$[($num_train_frames*$num_repeats)/$frames_per_iter + 1]
 echo "$0: Producing $num_train_archives archives for training"
 echo $num_train_archives > $dir/info/num_archives
@@ -136,6 +153,7 @@ if [ $nj -gt $num_train_archives ]; then
   nj=$num_train_archives
 fi
 
+# 为ark文件的egs创建连接
 if [ $stage -le 1 ]; then
   if [ -e $dir/storage ]; then
     # Make soft links to storage directories, if distributing this way..  See
@@ -146,6 +164,7 @@ if [ $stage -le 1 ]; then
   fi
 fi
 
+# 输出一些文件到临时目录用于分配样例, 或者扔掉某些chunks
 if [ $stage -le 2 ]; then
   echo "$0: Allocating training examples"
   $cmd $dir/log/allocate_examples_train.log \
@@ -189,6 +208,7 @@ fi
 # there are and where they come from.  If this is your first time running this
 # script, you might decide to put an exit 1 command here, and inspect the
 # contents of exp/$dir/temp/ranges.* before proceeding to the next stage.
+# 分配样例
 if [ $stage -le 3 ]; then
   echo "$0: Generating training examples on disk"
   rm $dir/.error 2>/dev/null
@@ -216,6 +236,7 @@ if [ $stage -le 3 ]; then
   fi
 fi
 
+# 打乱ark中的egs
 if [ $stage -le 4 ]; then
   echo "$0: Shuffling order of archives on disk"
   $cmd --max-jobs-run $nj JOB=1:$num_train_archives $dir/log/shuffle.JOB.log \
