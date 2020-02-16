@@ -50,6 +50,7 @@ namespace kaldi {
 struct PldaConfig {
   // This config is for the application of PLDA as a transform to iVectors,
   // prior to dot-product scoring.
+  // plda 是否正则化的参数
   bool normalize_length;
   bool simple_length_norm;
   PldaConfig(): normalize_length(true), simple_length_norm(false) { }
@@ -70,7 +71,7 @@ struct PldaConfig {
   }
 };
 
-
+// PLDA模型类
 class Plda {
  public:
   Plda() { }
@@ -88,7 +89,13 @@ class Plda {
   /// done this way for efficiency because a given iVector may be
   /// used multiple times in LogLikelihoodRatio and we don't want
   /// to repeat the matrix multiplication
-  ///
+  /// 
+  /// Plda模型参数包括：
+  /// mean：向量的全局均值
+  /// transform：投影矩阵,使得类内方差单位化、类间方差对角化的矩阵。W, 使得W^T Sb W 和 W^T Sw W都是对角的
+  /// psi_：类间方差分解后的矩阵 Sb= A psi_ A^T
+  /// offset_：-1.0 * transform_ * mean_
+
   /// If config.normalize_length == true, it will also normalize the iVector's
   /// length by multiplying by a scalar that ensures that ivector^T inv_var
   /// ivector = dim.  In this case, "num_examples" comes into play because it
@@ -117,6 +124,8 @@ class Plda {
   /// are assumed to have been transformed by the function TransformIvector().
   /// Note: any length normalization will have been done while computing
   /// the transformed iVectors.
+  /// 计算两个ivector相同和不同的比值，得到是否来自同一个人
+  /// transformed_train_ivector 时训练集中同一说话人不同句子的ivector的均值
   double LogLikelihoodRatio(const VectorBase<double> &transformed_train_ivector,
                             int32 num_train_utts,
                             const VectorBase<double> &transformed_test_ivector)
@@ -129,12 +138,16 @@ class Plda {
   /// situations where there were too few utterances per speaker get a good
   /// estimate of the within-class covariance, and where the leading elements of
   /// psi_ were as a result very large.
+  /// 该函数通过向类内方差矩阵加上smoothing_factor倍数的类间方差矩阵来做平滑操作。当
+  /// 每个说话人的语句不多时使用的补偿手段（此时类间方差矩阵容易估计，psi_的元素很大）。
   void SmoothWithinClassCovariance(double smoothing_factor);
 
   /// Apply a transform to the PLDA model.  This is mostly used for
   /// projecting the parameters of the model into a lower dimensional space,
   /// i.e. in_transform.NumRows() <= in_transform.NumCols(), typically for
   /// speaker diarization with a PCA transform.
+  /// 在PLDA中投影到低维空间的过程
+
   void ApplyTransform(const Matrix<double> &in_transform);
 
   int32 Dim() const { return mean_.Dim(); }
@@ -146,13 +159,20 @@ class Plda {
   friend class PldaUnsupervisedAdaptor;
 
   Vector<double> mean_;  // mean of samples in original space.
+                         // 向量的全局均值
+
   Matrix<double> transform_; // of dimension Dim() by Dim();
                              // this transform makes within-class covar unit
                              // and diagonalizes the between-class covar.
+                             // 投影矩阵,使得类内方差单位化、类间方差对角化的矩阵。
+                             // W, 使得W^T Sb W 和 W^T Sw W都是对角的
+
   Vector<double> psi_; // of dimension Dim().  The between-class
                        // (diagonal) covariance elements, in decreasing order.
+                       // 类间方差分解后的矩阵 Sb= A psi_ A^T
 
   Vector<double> offset_;  // derived variable: -1.0 * transform_ * mean_
+
 
  private:
   Plda &operator = (const Plda &other);  // disallow assignment
@@ -168,7 +188,7 @@ class Plda {
 
 };
 
-
+/// 训练PLDA的egs类
 class PldaStats {
  public:
   PldaStats(): dim_(0) { } /// The dimension is set up the first time you add samples.
@@ -178,6 +198,7 @@ class PldaStats {
   /// sample from this group.  The "weight" would normally
   /// be 1.0, but you can set it to other values if you want
   /// to weight your training samples.
+  /// 训练时，添加egs到类中
   void AddSamples(double weight,
                   const Matrix<double> &group);
 
@@ -196,13 +217,16 @@ class PldaStats {
   int64 num_classes_;
   int64 num_examples_; // total number of examples, summed over classes.
   double class_weight_; // total over classes, of their weight.
+                        // 每个类的weight
   double example_weight_; // total over classes, of weight times #examples.
-
+                          // 类中每个egs的weight
   Vector<double> sum_; // Weighted sum of class means (normalize by
                        // class_weight_ to get mean).
+                       // 使用weight计算的所有类的均值
 
   SpMatrix<double> offset_scatter_; // Sum over all examples, of the weight
                                     // times (example - class-mean).
+                                    // 所有egs的weight加权均值
 
   // We have one of these objects per class.
   struct ClassInfo {
@@ -224,36 +248,41 @@ class PldaStats {
 
 
 struct PldaEstimationConfig {
-  int32 num_em_iters;
-  PldaEstimationConfig(): num_em_iters(10){ }
+  int32 num_em_iters; //EM的迭代次数
+  PldaEstimationConfig(): num_em_iters(10){ } //EM的迭代次数默认为10次
   void Register(OptionsItf *opts) {
     opts->Register("num-em-iters", &num_em_iters,
                    "Number of iterations of E-M used for PLDA estimation");
   }
 };
 
+// PLDA的计算统计量类
 class PldaEstimator {
  public:
   PldaEstimator(const PldaStats &stats);
 
   void Estimate(const PldaEstimationConfig &config,
                 Plda *output);
-private:
+ private:
   typedef PldaStats::ClassInfo ClassInfo;
 
   /// Returns the part of the objf relating to
   /// offsets from the class means.  (total, not normalized)
+  /// 使用类均值计算offset_
   double ComputeObjfPart1() const;
 
   /// Returns the part of the obj relating to
   /// the class means (total_not normalized)
+  /// 计算类均值
   double ComputeObjfPart2() const;
 
   /// Returns the objective-function per sample.
+  /// 计算每个egs的目标函数？
   double ComputeObjf() const;
 
   int32 Dim() const { return stats_.Dim(); }
 
+  // E-step
   void EstimateOneIter();
 
   void InitParameters();
@@ -274,13 +303,18 @@ private:
 
   const PldaStats &stats_;
 
+  // 类内方差、类间方差
   SpMatrix<double> within_var_;
   SpMatrix<double> between_var_;
 
   // These stats are reset on each iteration.
+  // 类内方差统计量
   SpMatrix<double> within_var_stats_;
+  // 计算类内方差的样本数
   double within_var_count_; // count corresponding to within_var_stats_
+  // 类间方差统计量
   SpMatrix<double> between_var_stats_;
+  // 计算类间方差的样本数
   double between_var_count_; // count corresponding to within_var_stats_
 
   KALDI_DISALLOW_COPY_AND_ASSIGN(PldaEstimator);

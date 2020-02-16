@@ -24,6 +24,7 @@
 namespace kaldi {
 
 void Plda::Write(std::ostream &os, bool binary) const {
+  ///将模型写入io流
   WriteToken(os, binary, "<Plda>");
   mean_.Write(os, binary);
   transform_.Write(os, binary);
@@ -32,6 +33,7 @@ void Plda::Write(std::ostream &os, bool binary) const {
 }
 
 void Plda::Read(std::istream &is, bool binary) {
+  ///从io流读取plda
   ExpectToken(is, binary, "<Plda>");
   mean_.Read(is, binary);
   transform_.Read(is, binary);
@@ -43,8 +45,10 @@ void Plda::Read(std::istream &is, bool binary) {
 template<class Real>
 /// This function computes a projection matrix that when applied makes the
 /// covariance unit (i.e. all 1).
+/// 计算一个用于投影的投影矩阵，使得方差矩阵单位化的矩阵
 static void ComputeNormalizingTransform(const SpMatrix<Real> &covar,
                                         MatrixBase<Real> *proj) {
+  /// 使用Cholesky分解covarance矩阵计算投影矩阵
   int32 dim = covar.NumRows();
   TpMatrix<Real> C(dim);  // Cholesky of covar, covar = C C^T
   C.Cholesky(covar);
@@ -53,6 +57,7 @@ static void ComputeNormalizingTransform(const SpMatrix<Real> &covar,
   proj->CopyFromTp(C, kNoTrans);  // set "proj" to C^{-1}.
 }
 
+/// 计算offset_ = -1.0 * transform_ * mean_
 
 void Plda::ComputeDerivedVars() {
   KALDI_ASSERT(Dim() > 0);
@@ -155,12 +160,12 @@ double Plda::LogLikelihoodRatio(
     int32 n, // number of training utterances.
     const VectorBase<double> &transformed_test_ivector) const {
   int32 dim = Dim();
-  double loglike_given_class, loglike_without_class;
+  double  , loglike_without_class;
   { // work out loglike_given_class.
     // "mean" will be the mean of the distribution if it comes from the
     // training example.  The mean is \frac{n \Psi}{n \Psi + I} \bar{u}^g
     // "variance" will be the variance of that distribution, equal to
-    // I + \frac{\Psi}{n\Psi + I}.
+    // 
     Vector<double> mean(dim, kUndefined);
     Vector<double> variance(dim, kUndefined);
     for (int32 i = 0; i < dim; i++) {
@@ -515,9 +520,9 @@ void PldaEstimator::EstimateFromStats() {
 
 void PldaEstimator::EstimateOneIter() {
   ResetPerIterStats();
-  GetStatsFromIntraClass();
-  GetStatsFromClassMeans();
-  EstimateFromStats();
+  GetStatsFromIntraClass(); // 计算within_var_stats_
+  GetStatsFromClassMeans(); // 更新between_var_stats_, within_var_stats_
+  EstimateFromStats();      // 更新within_var_, between_var_
   KALDI_VLOG(2) << "Objective function is " << ComputeObjf();
 }
 
@@ -533,19 +538,21 @@ void PldaEstimator::Estimate(const PldaEstimationConfig &config,
   GetOutput(plda);
 }
 
-
+// 计算plda分数
 void PldaEstimator::GetOutput(Plda *plda) {
-  plda->mean_ = stats_.sum_;
+  plda->mean_ = stats_.sum_; // 全局均值
   plda->mean_.Scale(1.0 / stats_.class_weight_);
   KALDI_LOG << "Norm of mean of iVector distribution is "
             << plda->mean_.Norm(2.0);
 
   Matrix<double> transform1(Dim(), Dim());
+  // 计算使得within_var_对角化的变换矩阵transform1
   ComputeNormalizingTransform(within_var_, &transform1);
   // now transform is a matrix that if we project with it,
   // within_var_ becomes unit.
 
   // between_var_proj is between_var after projecting with transform1.
+  // between_var_proj是between_var做了transform1投影的矩阵
   SpMatrix<double> between_var_proj(Dim());
   between_var_proj.AddMat2Sp(1.0, transform1, kNoTrans, between_var_, 0.0);
 
@@ -553,6 +560,7 @@ void PldaEstimator::GetOutput(Plda *plda) {
   Vector<double> s(Dim());
   // Do symmetric eigenvalue decomposition between_var_proj = U diag(s) U^T,
   // where U is orthogonal.
+  // 分解between_var_proj得到有特征值的矩阵和对角化的投影矩阵U
   between_var_proj.Eig(&s, &U);
 
   KALDI_ASSERT(s.Min() >= 0.0);
@@ -571,8 +579,8 @@ void PldaEstimator::GetOutput(Plda *plda) {
   // i.e. first transform1 and then U^T.
 
   plda->transform_.Resize(Dim(), Dim());
-  plda->transform_.AddMatMat(1.0, U, kTrans, transform1, kNoTrans, 0.0);
-  plda->psi_ = s;
+  plda->transform_.AddMatMat(1.0, U, kTrans, transform1, kNoTrans, 0.0); // transform = U^T * transform1
+  plda->psi_ = s; // 更新psi
 
   KALDI_LOG << "Diagonal of between-class variance in normalized space is " << s;
 
@@ -589,7 +597,7 @@ void PldaEstimator::GetOutput(Plda *plda) {
     psi.CopyDiagFromSp(tmp_between);
     AssertEqual(psi, plda->psi_);
   }
-  plda->ComputeDerivedVars();
+  plda->ComputeDerivedVars(); // 计算offset——
 }
 
 void PldaUnsupervisedAdaptor::AddStats(double weight,

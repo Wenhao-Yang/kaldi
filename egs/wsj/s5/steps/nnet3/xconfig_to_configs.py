@@ -212,7 +212,7 @@ def write_config_files(config_dir, all_layers):
                 print('{0}: error in xconfig file {1}: may be lack of a '
                       'output layer'.format(sys.argv[0], sys.argv[2]),
                                             file=sys.stderr)
-                raise
+                # raise
 
         header = config_basename_to_header[basename]
         filename = '{0}/{1}.config'.format(config_dir, basename)

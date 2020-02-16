@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
     // depending on the config.
     HashType train_ivectors, test_ivectors;
 
+    /// 读取train和test的ivectors
     KALDI_LOG << "Reading train iVectors";
     for (; !train_ivector_reader.Done(); train_ivector_reader.Next()) {
       std::string spk = train_ivector_reader.Key();
@@ -150,7 +151,7 @@ int main(int argc, char *argv[]) {
     KALDI_LOG << "Average renormalization scale on test iVectors was "
               << (tot_test_renorm_scale / num_test_ivectors);
 
-
+    /// 读取trails文件
     Input ki(trials_rxfilename);
     bool binary = false;
     Output ko(scores_wxfilename, binary);

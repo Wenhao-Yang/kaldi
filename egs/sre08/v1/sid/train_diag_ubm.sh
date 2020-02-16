@@ -82,6 +82,7 @@ dir=$3
 
 sdata=$data/split$nj
 mkdir -p $dir/log
+# 将数据分成$nj部分
 utils/split_data.sh $data $nj || exit 1;
 
 for f in $data/feats.scp $data/vad.scp; do
@@ -94,7 +95,9 @@ echo $delta_opts > $dir/delta_opts
 
 # Note: there is no point subsampling all_feats, because gmm-global-init-from-feats
 # effectively does subsampling itself (it keeps a random subset of the features).
+# 为feature添加delta和选取vad后的有语音帧
 if $apply_cmn; then
+# 应用窗移的倒谱平均归一化
   all_feats="ark,s,cs:add-deltas $delta_opts scp:$data/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- | select-voiced-frames ark:- scp,s,cs:$data/vad.scp ark:- |"
   feats="ark,s,cs:add-deltas $delta_opts scp:$sdata/JOB/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- | select-voiced-frames ark:- scp,s,cs:$sdata/JOB/vad.scp ark:- | subsample-feats --n=$subsample ark:- ark:- |"
 else
@@ -110,6 +113,8 @@ if [ $stage -le -2 ]; then
   echo "$0: starting from $num_gauss_init Gaussians, reaching $num_gauss;"
   echo "$0: for $num_iters_init iterations, using at most $num_frames frames of data"
 
+  # 使用全部feature进行GMM的初始化
+  # 初始化GMM参数时，将方差设为特征的全局方差，均值设为随机选取的不同帧的值
   $cmd $parallel_opts $dir/log/gmm_init.log \
     gmm-global-init-from-feats --num-threads=$num_threads --num-frames=$num_frames \
      --min-gaussian-weight=$min_gaussian_weight \
@@ -118,6 +123,7 @@ if [ $stage -le -2 ]; then
 fi
 
 # Store Gaussian selection indices on disk-- this speeds up the training passes.
+# 将最优的一部分Gaussian模型存储到本地文件中
 if [ $stage -le -1 ]; then
   echo Getting Gaussian-selection info
   $cmd JOB=1:$nj $dir/log/gselect.JOB.log \
@@ -128,18 +134,22 @@ fi
 echo "$0: will train for $num_iters iterations, in parallel over"
 echo "$0: $nj machines, parallelized with '$cmd'"
 
+# EM训练过程
 for x in `seq 0 $[$num_iters-1]`; do
   echo "$0: Training pass $x"
   if [ $stage -le $x ]; then
-  # Accumulate stats.
+  # Accumulate stats. 计算相关累计统计量
     $cmd JOB=1:$nj $dir/log/acc.$x.JOB.log \
       gmm-global-acc-stats "--gselect=ark,s,cs:gunzip -c $dir/gselect.JOB.gz|" \
       $dir/$x.dubm "$feats" $dir/$x.JOB.acc || exit 1;
+
+    # 最后扔掉部分低概率的Gaussian
     if [ $x -lt $[$num_iters-1] ]; then # Don't remove low-count Gaussians till last iter,
       opt="--remove-low-count-gaussians=false" # or gselect info won't be valid any more.
     else
       opt="--remove-low-count-gaussians=$remove_low_count_gaussians"
     fi
+    # 使用计算的累计统计量更新GMM
     $cmd $dir/log/update.$x.log \
       gmm-global-est $opt --min-gaussian-weight=$min_gaussian_weight $dir/$x.dubm "gmm-global-sum-accs - $dir/$x.*.acc|" \
       $dir/$[$x+1].dubm || exit 1;

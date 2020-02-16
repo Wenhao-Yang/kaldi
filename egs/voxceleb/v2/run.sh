@@ -186,6 +186,7 @@ if [ $stage -le 10 ]; then
     ark:data/train/utt2spk $nnet_dir/xvectors_train/transform.mat || exit 1;
 
   # Train the PLDA model.
+  # subtract global mean and do lda transform before PLDA classification
   $train_cmd $nnet_dir/xvectors_train/log/plda.log \
     ivector-compute-plda ark:data/train/spk2utt \
     "ark:ivector-subtract-global-mean scp:$nnet_dir/xvectors_train/xvector.scp ark:- | transform-vec $nnet_dir/xvectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:-  ark:- |" \

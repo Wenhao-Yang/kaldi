@@ -104,18 +104,28 @@ fi
 # Initialize the i-vector extractor using the FGMM input
 if [ $stage -le -2 ]; then
   cp $fgmm_model $dir/final.ubm || exit 1;
+  # Convert single full-covariance GMM to single diagonal-covariance GMM.
+  # 将full UBM转成diag UBM
   $cmd $dir/log/convert.log \
     fgmm-global-to-gmm $dir/final.ubm $dir/final.dubm || exit 1;
+  # i-vector extractor的初始化
+  # IvectorExtractor类里保存了extract i-vector的所需要的变量：
+  #   M_：T 矩阵；
+  #   Sigma_inv_：UBM的逆方差矩阵；
+  #   等
   $cmd $dir/log/init.log \
     ivector-extractor-init --ivector-dim=$ivector_dim --use-weights=$use_weights \
      $dir/final.ubm $dir/0.ie || exit 1
 fi
 
 # Do Gaussian selection and posterior extracion
+# 计算选择概率最大的Gaussian和后验概率
 
 if [ $stage -le -1 ]; then
   echo $nj_full > $dir/num_jobs
   echo "$0: doing Gaussian selection and posterior computation"
+
+  # 给定特征和选择的概率高的full-covariance Gaussian模型，计算返回每个高斯的后验概率
   $cmd JOB=1:$nj_full $dir/log/gselect.JOB.log \
     gmm-gselect --n=$num_gselect $dir/final.dubm "$feats" ark:- \| \
     fgmm-global-gselect-to-post --min-post=$min_post $dir/final.ubm "$feats" \

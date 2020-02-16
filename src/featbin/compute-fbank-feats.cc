@@ -36,7 +36,10 @@ int main(int argc, char *argv[]) {
     ParseOptions po(usage);
     FbankOptions fbank_opts;
     // Define defaults for global options.
+    // 是否减去均值
     bool subtract_mean = false;
+
+    //Vocal Tract Length Normalisation, 声道长度归一化。消除男，女的声道长度的差异。修改了MEL频率中的中心频率。
     BaseFloat vtln_warp = 1.0;
     std::string vtln_map_rspecifier;
     std::string utt2spk_rspecifier;
@@ -103,9 +106,12 @@ int main(int argc, char *argv[]) {
     DoubleWriter utt2dur_writer(utt2dur_wspecifier);
 
     int32 num_utts = 0, num_success = 0;
+    //所有wav循环，计算
     for (; !reader.Done(); reader.Next()) {
       num_utts++;
+      // utt为uid
       std::string utt = reader.Key();
+      // wave_data为wav数据
       const WaveData &wave_data = reader.Value();
       if (wave_data.Duration() < min_duration) {
         KALDI_WARN << "File: " << utt << " is too short ("
@@ -151,6 +157,8 @@ int main(int argc, char *argv[]) {
         KALDI_WARN << "Failed to compute features for utterance " << utt;
         continue;
       }
+
+      // 是否减去均值
       if (subtract_mean) {
         Vector<BaseFloat> mean(features.NumCols());
         mean.AddRowSumMat(1.0, features);

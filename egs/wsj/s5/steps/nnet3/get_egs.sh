@@ -110,6 +110,7 @@ num_ali_jobs=$(cat $alidir/num_jobs) || exit 1;
 
 
 num_utts=$(cat $data/utt2spk | wc -l)
+# data中utt的数量要大于1200
 if ! [ $num_utts -gt $[$num_utts_subset*4] ]; then
   echo "$0: number of utterances $num_utts in your training data is too small versus --num-utts-subset=$num_utts_subset"
   echo "... you probably have so little data that it doesn't make sense to train a neural net."
@@ -117,6 +118,7 @@ if ! [ $num_utts -gt $[$num_utts_subset*4] ]; then
 fi
 
 # Get list of validation utterances.
+# 分离num_utts_subset（默认300）的uttid条语句作为valid集
 awk '{print $1}' $data/utt2spk | utils/shuffle_list.pl 2>/dev/null | head -$num_utts_subset \
     > $dir/valid_uttlist
 
@@ -130,7 +132,7 @@ if [ -f $data/utt2uniq ]; then  # this matters if you use data augmentation.
     awk '{for(n=1;n<=NF;n++) print $n;}' | sort  > $dir/valid_uttlist
   rm $dir/uniq2utt $dir/valid_uttlist.tmp
 fi
-
+# 分离num_utts_subset（默认300）的uttid条语句作为train_subset集
 awk '{print $1}' $data/utt2spk | utils/filter_scp.pl --exclude $dir/valid_uttlist | \
    utils/shuffle_list.pl 2>/dev/null | head -$num_utts_subset > $dir/train_subset_uttlist
 
@@ -139,6 +141,7 @@ echo "$0: creating egs.  To ensure they are not deleted later you can do:  touch
 ## Set up features.
 echo "$0: feature type is raw"
 
+# 获取valid和train_subset集合的feat
 feats="ark,s,cs:utils/filter_scp.pl --exclude $dir/valid_uttlist $sdata/JOB/feats.scp | apply-cmvn $cmvn_opts --utt2spk=ark:$sdata/JOB/utt2spk scp:$sdata/JOB/cmvn.scp scp:- ark:- |"
 valid_feats="ark,s,cs:utils/filter_scp.pl $dir/valid_uttlist $data/feats.scp | apply-cmvn $cmvn_opts --utt2spk=ark:$data/utt2spk scp:$data/cmvn.scp scp:- ark:- |"
 train_subset_feats="ark,s,cs:utils/filter_scp.pl $dir/train_subset_uttlist $data/feats.scp | apply-cmvn $cmvn_opts --utt2spk=ark:$data/utt2spk scp:$data/cmvn.scp scp:- ark:- |"
@@ -155,6 +158,7 @@ else
   echo 0 >$dir/info/ivector_dim
 fi
 
+# 获取每个utt的frame数目和特征的维度
 if [ $stage -le 1 ]; then
   echo "$0: working out number of frames of training data"
   num_frames=$(steps/nnet2/get_num_frames.sh $data)
@@ -171,13 +175,14 @@ else
   feat_dim=$(cat $dir/info/feat_dim) || exit 1;
 fi
 
-
+# 每个egs的帧数（8）
 # the first field in frames_per_eg (which is a comma-separated list of numbers)
 # is the 'principal' frames-per-eg, and for purposes of working out the number
 # of archives we assume that this will be the average number of frames per eg.
 frames_per_eg_principal=$(echo $frames_per_eg | cut -d, -f1)
 
 # the + 1 is to round up, not down... we assume it doesn't divide exactly.
+# ark数目等于utt帧数/egs帧数*每个iteration的egs数目
 num_archives=$[$num_frames/($frames_per_eg_principal*$samples_per_iter)+1]
 if [ $num_archives -eq 1 ]; then
   echo "*** $0: warning: the --frames-per-eg is too large to generate one archive with"

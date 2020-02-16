@@ -65,16 +65,20 @@ int main(int argc, char *argv[]) {
 
     PldaStats plda_stats;
 
+    //读取utterance的标签到
     for (; !spk2utt_reader.Done(); spk2utt_reader.Next()) {
       std::string spk = spk2utt_reader.Key();
+      //所有spk表
       const std::vector<std::string> &uttlist = spk2utt_reader.Value();
       if (uttlist.empty()) {
         KALDI_ERR << "Speaker with no utterances.";
       }
+      //创建存储i-vector的容器，并分配空间
       std::vector<Vector<BaseFloat> > ivectors;
       ivectors.reserve(uttlist.size());
 
       for (size_t i = 0; i < uttlist.size(); i++) {
+        //每个spk有多个utterance
         std::string utt = uttlist[i];
         if (!ivector_reader.HasKey(utt)) {
           KALDI_WARN << "No iVector present in input for utterance " << utt;
@@ -91,12 +95,14 @@ int main(int argc, char *argv[]) {
                    << " since no utterances had iVectors";
         num_spk_err++;
       } else {
+        //创建ivectors矩阵
         Matrix<double> ivector_mat(ivectors.size(), ivectors[0].Dim());
         for (size_t i = 0; i < ivectors.size(); i++)
           ivector_mat.Row(i).CopyFromVec(ivectors[i]);
         double weight = 1.0; // The code supports weighting but
                              // we don't support this at the command-line
                              // level yet.
+        //plda_stats中添加ivectors
         plda_stats.AddSamples(weight, ivector_mat);
         num_spk_done++;
       }

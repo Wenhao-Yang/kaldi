@@ -1,4 +1,4 @@
-# Copyright 2016    Johns Hopkins University (Dan Povey)
+F# Copyright 2016    Johns Hopkins University (Dan Povey)
 #           2016    Vijayaditya Peddinti
 #           2017    Google Inc. (vpeddinti@google.com)
 #           2017    Vimal Manohar

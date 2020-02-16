@@ -29,6 +29,7 @@ namespace kaldi {
 
 // We initialize the GMM parameters by setting the variance to the global
 // variance of the features, and the means to distinct randomly chosen frames.
+// 初始化GMM参数时，将方差设为特征的全局方差，均值设为随机选取的不同帧的值
 void InitGmmFromRandomFrames(const Matrix<BaseFloat> &feats, DiagGmm *gmm) {
   int32 num_gauss = gmm->NumGauss(), num_frames = feats.NumRows(),
       dim = feats.NumCols();
@@ -41,7 +42,8 @@ void InitGmmFromRandomFrames(const Matrix<BaseFloat> &feats, DiagGmm *gmm) {
   var.AddVec2(-1.0, mean);
   if (var.Max() <= 0.0)
     KALDI_ERR << "Features do not have positive variance " << var;
-  
+
+  // 定义在src/gmm/diag-gmm-normal.h中
   DiagGmmNormal gmm_normal(*gmm);
 
   std::set<int32> used_frames;
@@ -69,6 +71,8 @@ void TrainOneIter(const Matrix<BaseFloat> &feats,
   frame_weights.Set(1.0);
 
   double tot_like;
+  // Accumulate for all components given a diagonal-covariance GMM.
+  // Computes posteriors and returns log-likelihood 计算并返回后验概率的log
   tot_like = gmm_acc.AccumulateFromDiagMultiThreaded(*gmm, feats, frame_weights,
                                                      num_threads);
 
@@ -77,6 +81,8 @@ void TrainOneIter(const Matrix<BaseFloat> &feats,
             << feats.NumRows() << " frames.";
   
   BaseFloat objf_change, count;
+  // computing the maximum-likelihood estimates of the parameters of a Gaussian mixture model.
+  // 计算GMM的参数的极大似然估计值
   MleDiagGmmUpdate(gmm_opts, gmm_acc, kGmmAll, gmm, &objf_change, &count);
 
   KALDI_LOG << "Objective-function change on iteration " << iter << " was "
@@ -114,7 +120,7 @@ int main(int argc, char *argv[]) {
     po.Register("num-iters", &num_iters, "Number of iterations of training");
     po.Register("num-frames", &num_frames, "Number of feature vectors to store in "
                 "memory and train on (randomly chosen from the input features)");
-    po.Register("srand", &srand_seed, "Seed for random number generator ");
+    po.Register(" ", &srand_seed, "Seed for random number generator ");
     po.Register("num-threads", &num_threads, "Number of threads used for "
                 "statistics accumulation");
                 
@@ -142,7 +148,8 @@ int main(int argc, char *argv[]) {
     int64 num_read = 0, dim = 0;
 
     KALDI_LOG << "Reading features (will keep " << num_frames << " frames.)";
-    
+
+    // 读取、存储输入的features
     for (; !feature_reader.Done(); feature_reader.Next()) {
       const Matrix<BaseFloat>  &this_feats = feature_reader.Value();
       for (int32 t = 0; t < this_feats.NumRows(); t++) {
@@ -178,15 +185,19 @@ int main(int argc, char *argv[]) {
 
     if (num_gauss_init <= 0 || num_gauss_init > num_gauss)
       num_gauss_init = num_gauss;
-    
+
+    // 定义一个GMM，其中num_gauss_init为高斯个数， dim为数据维度
     DiagGmm gmm(num_gauss_init, dim);
     
     KALDI_LOG << "Initializing GMM means from random frames to "
               << num_gauss_init << " Gaussians.";
+
+    // 初始化GMM参数时，将方差设为特征的全局方差，均值设为随机选取的不同帧的值
     InitGmmFromRandomFrames(feats, &gmm);
 
     // we'll increase the #Gaussians by splitting,
     // till halfway through training.
+    // 初始化的GMM的Gaussian数目只占总数的一部分，每一个更新迭代添加
     int32 cur_num_gauss = num_gauss_init,
         gauss_inc = (num_gauss - num_gauss_init) / (num_iters / 2);
         

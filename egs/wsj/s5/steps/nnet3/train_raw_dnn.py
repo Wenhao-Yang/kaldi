@@ -12,6 +12,7 @@ from __future__ import print_function
 from __future__ import division
 import argparse
 import logging
+import pdb
 import pprint
 import os
 import sys
@@ -37,7 +38,6 @@ logger.info('Starting raw DNN trainer (train_raw_dnn.py)')
 
 def get_args():
     """ Get args from stdin.
-
     The common options are defined in the object
     libs.nnet3.train.common.CommonParser.parser.
     See steps/libs/nnet3/train/common.py
@@ -185,7 +185,6 @@ def process_args(args):
 
 def train(args, run_opts):
     """ The main function for training.
-
     Args:
         args: a Namespace object with the required parameters
             obtained from the function process_args()
@@ -324,6 +323,7 @@ def train(args, run_opts):
     num_archives_to_process = int(args.num_epochs * num_archives_expanded)
     num_archives_processed = 0
     num_iters = int((num_archives_to_process * 2) / (args.num_jobs_initial + args.num_jobs_final))
+    # num_iters =  num_epochs * num_archives * args.frames_per_eg * 2 / (args.num_jobs_initial + args.num_jobs_final)
 
     # If do_final_combination is True, compute the set of models_to_combine.
     # Otherwise, models_to_combine will be none.
@@ -358,9 +358,12 @@ def train(args, run_opts):
             logger.info("Exiting early due to --exit-stage {0}".format(iter))
             return
 
-        current_num_jobs = common_train_lib.get_current_num_jobs(
+        try:
+            current_num_jobs = common_train_lib.get_current_num_jobs(
             iter, num_iters,
             args.num_jobs_initial, args.num_jobs_step, args.num_jobs_final)
+        except:
+            pdb.set_trace()
 
         if args.stage <= iter:
             lrate = common_train_lib.get_learning_rate(iter, current_num_jobs,

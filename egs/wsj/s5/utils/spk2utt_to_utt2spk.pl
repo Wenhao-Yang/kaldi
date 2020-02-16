@@ -23,5 +23,3 @@ while(<>){
         print "$u $s\n";
     }
 }
-
-

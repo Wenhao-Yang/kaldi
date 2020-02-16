@@ -36,20 +36,25 @@
 #
 # Note: <relative-archive-index> is the zero-based offset of the archive-index
 # within the subset of archives that a particular ranges file corresponds to;
+# <relative-archive-index> 是在archive中从零开始的相对偏移量
+
 # and <absolute-archive-index> is the 1-based numeric index of the destination
 # archive among the entire list of archives, which will form part of the
 # archive's filename (e.g. egs/egs.<absolute-archive-index>.ark);
 # <absolute-archive-index> is only kept for debug purposes so you can see which
 # archive each line corresponds to.
+# <absolute-archive-index> 是在archive中从一开始的相对偏移量
 #
 # For each line of the ranges file, we specify an eg containing a chunk of data
 # from a given utterane, the corresponding speaker label, and the output
 # archive.  The list of archives corresponding to ranges.n will be written to
 # output.n, so in exp/xvector_a/temp/outputs.1 we'd have:
+# range文件中的一行是从一个utterance中选取的数据chunk组成的eg
 #
 #  ark:exp/xvector_a/egs/egs_temp.1.ark ark:exp/xvector_a/egs/egs_temp.2.ark \
 #    ark:exp/xvector_a/egs/egs_temp.3.ark
 #
+# 一共回生成'num-jobs'个egs_temp.ark文件
 # The number of these files will equal 'num-jobs'.  If you add up the
 # word-counts of all the outputs.* files you'll get 'num-archives'.  The number
 # of frames in each archive will be about the --frames-per-iter.
@@ -57,6 +62,7 @@
 # This program will also output to the temp directory a file called
 # archive_chunk_length which tells you the frame-length associated with
 # each archive, e.g.,
+# 同时在临时文件夹中输出一个archive_chunk_length文件，包含了每个ark中chunk的帧长度
 # 1   60
 # 2   120
 # the format is:  <archive-index> <num-frames>.  The <num-frames> will always
@@ -66,6 +72,8 @@
 # We're using python 3.x style print but want it to work in python 2.x.
 from __future__ import print_function
 from __future__ import division
+
+import pdb
 import re, os, argparse, sys, math, warnings, random
 
 def get_args():
@@ -133,6 +141,7 @@ def process_args(args):
     return args
 
 # Create utt2len
+# 获取帧长
 def get_utt2len(utt2len_filename):
     utt2len = {}
     f = open(utt2len_filename, "r")
@@ -218,9 +227,12 @@ def get_random_offset(utt_length, length):
 
 def main():
     args = get_args()
+
     if not os.path.exists(args.egs_dir + "/temp"):
         os.makedirs(args.egs_dir + "/temp")
     random.seed(args.seed)
+
+    # 每个utt对应的frame长度
     utt2len = get_utt2len(args.utt2len_filename)
     spks, spk2utt, utt2spk = get_labels(args.utt2int_filename)
     if args.num_pdfs == -1:
@@ -239,28 +251,39 @@ def main():
     info_f = open(args.egs_dir + "/temp/" + prefix + "archive_chunk_lengths", "w")
     if info_f is None:
         sys.exit(str("Error opening file {0}/temp/" + prefix + "archive_chunk_lengths").format(args.egs_dir));
+
     for archive_index in range(args.num_archives):
         print("Processing archive {0}".format(archive_index + 1))
         if args.randomize_chunk_length == "true":
             # don't constrain the lengths to be the same
+            # 随机min到max的chunk长的帧
             length = random_chunk_length(args.min_frames_per_chunk, args.max_frames_per_chunk)
         else:
             length = deterministic_chunk_length(archive_index, args.num_archives, args.min_frames_per_chunk, args.max_frames_per_chunk);
         print("{0} {1}".format(archive_index + 1, length), file=info_f)
         archive_chunk_lengths.append(length)
+        
+        # 每个iteration的egs数目
         this_num_egs = int(float(args.frames_per_iter) / length + 1)
         this_egs = [ ] # A 2-tuple of the form (utt-id, start-frame)
         spkrs = args.num_repeats * list(spk2utt.keys())
         random.shuffle(spkrs)
         for n in range(this_num_egs):
-            if len(spkrs) == 0:
+            if len(spkrs) == 0: # egs数目小于/等于spks重复的数目
                 print("Ran out of speakers for archive {0}".format(archive_index + 1))
                 break
+            # 选择一个spk
             spkr = spkrs.pop()
+            # 随机出spk的一个utt
             utt = get_random_utt(spkr, spk2utt, length)
+            
+            # 随机的utt的长度
             utt_len = utt2len[utt]
+
+            # 长度为length，随机出一个开始点
             offset = get_random_offset(utt_len, length)
             this_egs.append( (utt, offset) )
+        
         all_egs.append(this_egs)
     info_f.close()
 

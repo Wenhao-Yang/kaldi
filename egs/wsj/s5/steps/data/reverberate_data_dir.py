@@ -20,6 +20,9 @@ def get_args():
                                                  "--random-seed 1 data/train data/train_rvb",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+    # RIR 混合权重(mixture_weight) 和 rir文件名列表(rir_list_file_name)
+    # rir 文件名列表中：
+    # --rir-id small-Room001-00001 --room-id small-Room001 RIRS_NOISES/simulated_rirs/smallroom/Room001/Room001-00001.wav
     parser.add_argument("--rir-set-parameters", type=str, action='append', required = True, dest = "rir_set_para_array",
                         help="Specifies the parameters of an RIR set. "
                         "Supports the specification of  mixture_weight and rir_list_file_name. The mixture weight is optional. "
@@ -32,6 +35,7 @@ def get_args():
                         "--rt-60 <float,optional> --drr <float, optional> location <rspecifier> "
                         "E.g. --rir-id 00001 --room-id 001 --receiver-position-id 001 --source-position-id 00001 "
                         "--rt60 0.58 --drr -4.885 data/impulses/Room001-00001.wav")
+    #
     parser.add_argument("--noise-set-parameters", type=str, action='append', default = None, dest = "noise_set_para_array",
                         help="Specifies the parameters of an noise set. "
                         "Supports the specification of mixture_weight and noise_list_file_name. The mixture weight is optional. "
@@ -489,6 +493,9 @@ def parse_set_parameter_strings(set_para_array):
     """ This function parse the array of rir set parameter strings.
         It will assign probabilities to those rir sets which don't have a probability
         It will also check the existence of the rir list files.
+
+        set_para_array likes:
+            "0.5, RIRS_NOISES/simulated_rirs/smallroom/rir_list"
     """
     set_list = []
     for set_para in set_para_array:
@@ -505,6 +512,9 @@ def parse_set_parameter_strings(set_para_array):
             raise Exception(set.filename + " not found")
         set_list.append(set)
 
+    # set_list = [<function <lambda> at 0x12ffe4f28>
+    #   where probability = {float} 0.5
+    #   filename = {str} 'RIRS_NOISES/simulated_rirs/smallroom/rir_list']
     return smooth_probability_distribution(set_list)
 
 
@@ -513,6 +523,7 @@ def parse_rir_list(rir_set_para_array, smoothing_weight, sampling_rate = None):
         Each rir object in the list contains the following attributes:
         rir_id, room_id, receiver_position_id, source_position_id, rt60, drr, probability
         Please refer to the help messages in the parser for the meaning of these attributes
+        解析rir文件名列表
     """
     rir_parser = argparse.ArgumentParser()
     rir_parser.add_argument('--rir-id', type=str, required=True, help='This id is unique for each RIR and the noise may associate with a particular RIR by refering to this id')

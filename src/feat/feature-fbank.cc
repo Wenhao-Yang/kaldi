@@ -91,11 +91,13 @@ void FbankComputer::Compute(BaseFloat signal_raw_log_energy,
     RealFft(signal_frame, true);
 
   // Convert the FFT into a power spectrum.
+  // 计算能量谱
   ComputePowerSpectrum(signal_frame);
   SubVector<BaseFloat> power_spectrum(*signal_frame, 0,
                                       signal_frame->Dim() / 2 + 1);
 
   // Use magnitude instead of power if requested.
+  // 计算振幅谱
   if (!opts_.use_power)
     power_spectrum.ApplyPow(0.5);
 
@@ -113,6 +115,7 @@ void FbankComputer::Compute(BaseFloat signal_raw_log_energy,
   }
 
   // Copy energy as first value (or the last, if htk_compat == true).
+  // 将第一维添加为log能量， 如果use_energy为true
   if (opts_.use_energy) {
     if (opts_.energy_floor > 0.0 && signal_raw_log_energy < log_energy_floor_) {
       signal_raw_log_energy = log_energy_floor_;
