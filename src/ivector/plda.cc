@@ -160,7 +160,7 @@ double Plda::LogLikelihoodRatio(
     int32 n, // number of training utterances.
     const VectorBase<double> &transformed_test_ivector) const {
   int32 dim = Dim();
-  double  , loglike_without_class;
+  double  loglike_given_class, loglike_without_class;
   { // work out loglike_given_class.
     // "mean" will be the mean of the distribution if it comes from the
     // training example.  The mean is \frac{n \Psi}{n \Psi + I} \bar{u}^g
