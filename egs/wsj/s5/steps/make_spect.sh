@@ -9,7 +9,7 @@
 # Begin configuration section.
 nj=4
 cmd=run.pl
-fbank_config=conf/fbank.conf
+fbank_config=conf/spect.conf
 compress=true
 write_utt2num_frames=true  # If true writes utt2num_frames.
 write_utt2dur=true
@@ -165,7 +165,7 @@ fi
 frame_shift=$(perl -ne 'if (/^--frame-shift=(\d+)/) {
                           printf "%.3f", 0.001 * $1; exit; }' $fbank_config)
 echo ${frame_shift:-'0.01'} > $data/frame_shift
-mkdir -p $data/conf && cp $fbank_config $data/conf/fbank.conf || exit 1
+mkdir -p $data/conf && cp $fbank_config $data/conf/spect.conf || exit 1
 
 rm $logdir/wav_${name}.*.scp  $logdir/segments.* \
    $logdir/utt2num_frames.* $logdir/utt2dur.* 2>/dev/null
