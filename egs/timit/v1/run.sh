@@ -65,14 +65,14 @@ fi
 if [ $stage -le 2 ]; then
   # Train the UBM.
   # 训练2048的diag GMM
-  sid/train_diag_ubm.sh --cmd "$train_cmd --mem 4G" \
-    --nj 12 --num-threads 8 \
-    data/train 1024 \
-    exp/diag_ubm
+  # sid/train_diag_ubm.sh --cmd "$train_cmd --mem 4G" \
+  #   --nj 12 --num-threads 8 \
+  #   data/train 1024 \
+  #   exp/diag_ubm
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 4G" \
     --nj 12 --remove-low-count-gaussians true \
-    --min-gaussian-weigh 1.0e-4 \
+    --min-gaussian-weight 1.0e-4 \
     data/train \
     exp/diag_ubm exp/full_ubm
 fi
