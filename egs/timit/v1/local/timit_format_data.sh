@@ -14,7 +14,7 @@ srcdir=data/local/data
 # lmdir=data/local/nist_lm
 # tmpdir=data/local/lm_tmp
 # lexicon=data/local/dict/lexicon.txt
-mkdir -p $tmpdir
+# mkdir -p $tmpdir
 
 for x in train dev test; do
   mkdir -p data/$x
@@ -66,4 +66,4 @@ done
 # utils/validate_lang.pl data/lang_test_bg || exit 1
 
 echo "Succeeded in formatting data."
-rm -r $tmpdir
+# rm -r $tmpdir
