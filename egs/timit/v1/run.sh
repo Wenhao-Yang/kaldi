@@ -37,8 +37,8 @@ if [ $stage -le 0 ]; then
   fi
 
   for name in ${train} ${test} ; do
-    utils/validate_data_dir.sh --no-text --no-feats ${name}
     utils/fix_data_dir.sh ${name}
+    utils/validate_data_dir.sh --no-text --no-feats ${name}
   done
 
 fi
