@@ -28,14 +28,13 @@ stage=0
 if [ $stage -le 0 ]; then
   if [ ! -d ${train} ]; then
     mkdir -p ${train}
+    cp ${timit_root}/train/* ${train}
   fi
 
   if [ ! -d ${test} ]; then
     mkdir -p ${test}
+    cp ${timit_root}/test/* ${test}
   fi
-
-  cp ${timit_root}/train/* ${train}
-  cp ${timit_root}/test/* %{test}
 
   for name in ${train} ${test} ; do
     utils/validate_data_dir.sh --no-text --no-feats ${name}
