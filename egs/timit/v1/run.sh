@@ -28,10 +28,12 @@ stage=0
 if [ $stage -le 0 ]; then
   if [ ! -d ${train} ]; then
     mkdir ${train}
+  fi
 
   if [ ! -d ${test} ]; then
     mkdir ${test}
-
+  fi
+  
   cp ${timit_root}/train/* ${train}
   cp ${timit_root}/test/* %{test}
 
