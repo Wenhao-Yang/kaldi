@@ -27,7 +27,7 @@ train=data/train
 test=data/test
 
 
-stage=2
+stage=5
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -112,7 +112,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=196
+  lda_dim=128
   $train_cmd exp/ivectors_train/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train/ivector.scp ark:- |" \
@@ -141,7 +141,14 @@ if [ $stage -le 7 ]; then
   echo "EER: $eer%"
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
-  # EER: 5.329%
-  # minDCF(p-target=0.01): 0.4933
-  # minDCF(p-target=0.001): 0.6168
+
+# 2048 UBM 400-200
+# EER: 31.1%
+# minDCF(p-target=0.01): 0.9926
+# minDCF(p-target=0.001): 0.9926
+
+# 1024 UBM 256-196
+# EER: 13.69%
+# minDCF(p-target=0.01): 0.9360
+# minDCF(p-target=0.001): 0.9360
 fi
