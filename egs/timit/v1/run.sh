@@ -14,35 +14,36 @@ set -e
 mfccdir=`pwd`/mfcc
 vaddir=`pwd`/mfcc
 
-# The trials file is downloaded by local/make_voxceleb1_v2.pl.
-voxceleb1_trials=data/voxceleb1_test/trials
-voxceleb1_root=/export/corpora/VoxCeleb1
-voxceleb2_root=/export/corpora/VoxCeleb2
+# The trials file is downloaded by local/make_timit_v2.pl.
+# timit_trials=data/timit_test/trials
+# timit_root=/export/corpora/VoxCeleb1
+# voxceleb2_root=/export/corpora/VoxCeleb2
+timit_root=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit
+timit_trials=data/test/trials
+train=data/train
+test=data/test
 
 stage=0
 
 if [ $stage -le 0 ]; then
-  local/make_voxceleb2.pl $voxceleb2_root dev data/voxceleb2_train
-  local/make_voxceleb2.pl $voxceleb2_root test data/voxceleb2_test
-  # This script creates data/voxceleb1_test and data/voxceleb1_train for latest version of VoxCeleb1.
-  # Our evaluation set is the test portion of VoxCeleb1.
-  local/make_voxceleb1_v2.pl $voxceleb1_root dev data/voxceleb1_train
-  local/make_voxceleb1_v2.pl $voxceleb1_root test data/voxceleb1_test
-  # if you downloaded the dataset soon after it was released, you will want to use the make_voxceleb1.pl script instead.
-  # local/make_voxceleb1.pl $voxceleb1_root data
-  # We'll train on all of VoxCeleb2, plus the training portion of VoxCeleb1.
-  # This should give 7,323 speakers and 1,276,888 utterances.
-  utils/combine_data.sh data/train data/voxceleb2_train data/voxceleb2_test data/voxceleb1_train
+  cp ${timit_root}/train ${train}
+  cp ${timit_root}/test %{test}
+  
+  for name in ${train} ${test} ; do
+    utils/validate_data_dir.sh --no-text --no-feats ${name}
+    utils/fix_data_dir.sh ${name}
+  done
+
 fi
 
 if [ $stage -le 1 ]; then
   # Make MFCCs and compute the energy-based VAD for each dataset
-  for name in train voxceleb1_test; do
+  for name in train test; do
     steps/make_mfcc.sh --write-utt2num-frames true \
-      --mfcc-config conf/mfcc.conf --nj 40 --cmd "$train_cmd" \
+      --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
       data/${name} exp/make_mfcc $mfccdir
     utils/fix_data_dir.sh data/${name}
-    sid/compute_vad_decision.sh --nj 40 --cmd "$train_cmd" \
+    sid/compute_vad_decision.sh --nj 8 --cmd "$train_cmd" \
       data/${name} exp/make_vad $vaddir
     utils/fix_data_dir.sh data/${name}
   done
@@ -52,12 +53,12 @@ if [ $stage -le 2 ]; then
   # Train the UBM.
   # 训练2048的diag GMM
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 4G" \
-    --nj 40 --num-threads 8 \
+    --nj 12 --num-threads 8 \
     data/train 2048 \
     exp/diag_ubm
   # 训练2048的full GMM
-  sid/train_full_ubm.sh --cmd "$train_cmd --mem 25G" \
-    --nj 40 --remove-low-count-gaussians false \
+  sid/train_full_ubm.sh --cmd "$train_cmd --mem 16G" \
+    --nj 12 --remove-low-count-gaussians false \
     data/train \
     exp/diag_ubm exp/full_ubm
 fi
@@ -71,24 +72,24 @@ if [ $stage -le 3 ]; then
   # harmful for training the i-vector extractor.  Therefore, to reduce the
   # training time and improve performance, we will only train on the 100k
   # longest utterances.
-  utils/subset_data_dir.sh \
-    --utt-list <(sort -n -k 2 data/train/utt2num_frames | tail -n 100000) \
-    data/train data/train_100k
-  # Train the i-vector extractor.
+  # utils/subset_data_dir.sh \
+  #   --utt-list <(sort -n -k 2 data/train/utt2num_frames | tail -n 100000) \
+  #   data/train data/train_100k
+  # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd --mem 16G" \
     --ivector-dim 400 --num-iters 5 \
-    exp/full_ubm/final.ubm data/train_100k \
+    exp/full_ubm/final.ubm data/train \
     exp/extractor
 fi
 
 if [ $stage -le 4 ]; then
-  sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 80 \
+  sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 12 \
     exp/extractor data/train \
     exp/ivectors_train
 
-  sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 40 \
-    exp/extractor data/voxceleb1_test \
-    exp/ivectors_voxceleb1_test
+  sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 8 \
+    exp/extractor data/timit_test \
+    exp/ivectors_timit_test
 fi
 
 if [ $stage -le 5 ]; then
@@ -112,18 +113,18 @@ if [ $stage -le 5 ]; then
 fi
 
 if [ $stage -le 6 ]; then
-  $train_cmd exp/scores/log/voxceleb1_test_scoring.log \
+  $train_cmd exp/scores/log/timit_test_scoring.log \
     ivector-plda-scoring --normalize-length=true \
     "ivector-copy-plda --smoothing=0.0 exp/ivectors_train/plda - |" \
-    "ark:ivector-subtract-global-mean exp/ivectors_train/mean.vec scp:exp/ivectors_voxceleb1_test/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
-    "ark:ivector-subtract-global-mean exp/ivectors_train/mean.vec scp:exp/ivectors_voxceleb1_test/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
-    "cat '$voxceleb1_trials' | cut -d\  --fields=1,2 |" exp/scores_voxceleb1_test || exit 1;
+    "ark:ivector-subtract-global-mean exp/ivectors_train/mean.vec scp:exp/ivectors_timit_test/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
+    "ark:ivector-subtract-global-mean exp/ivectors_train/mean.vec scp:exp/ivectors_timit_test/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
+    "cat '$timit_trials' | cut -d\  --fields=1,2 |" exp/scores_timit_test || exit 1;
 fi
 
 if [ $stage -le 7 ]; then
-  eer=`compute-eer <(local/prepare_for_eer.py $voxceleb1_trials exp/scores_voxceleb1_test) 2> /dev/null`
-  mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_voxceleb1_test $voxceleb1_trials 2> /dev/null`
-  mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_voxceleb1_test $voxceleb1_trials 2> /dev/null`
+  eer=`compute-eer <(local/prepare_for_eer.py $timit_trials exp/scores_timit_test) 2> /dev/null`
+  mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test $timit_trials 2> /dev/null`
+  mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test $timit_trials 2> /dev/null`
   echo "EER: $eer%"
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
