@@ -27,7 +27,7 @@ train=data/train
 test=data/test
 
 
-stage=5
+stage=2
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -67,10 +67,10 @@ if [ $stage -le 2 ]; then
   # 训练2048的diag GMM
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 4G" \
     --nj 12 --num-threads 8 \
-    data/train 2048 \
+    data/train 1024 \
     exp/diag_ubm
   # 训练2048的full GMM
-  sid/train_full_ubm.sh --cmd "$train_cmd --mem 16G" \
+  sid/train_full_ubm.sh --cmd "$train_cmd --mem 4G" \
     --nj 12 --remove-low-count-gaussians false \
     data/train \
     exp/diag_ubm exp/full_ubm
@@ -90,7 +90,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
-    --ivector-dim 400 --num-iters 5 \
+    --ivector-dim 256 --num-iters 5 \
     exp/full_ubm/final.ubm data/train \
     exp/extractor
 fi
@@ -112,7 +112,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=200
+  lda_dim=196
   $train_cmd exp/ivectors_train/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train/ivector.scp ark:- |" \
