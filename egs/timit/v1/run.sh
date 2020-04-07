@@ -27,7 +27,7 @@ train=data/train
 test=data/test
 
 
-stage=5
+stage=3
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -90,7 +90,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
-    --ivector-dim 256 --num-iters 5 \
+    --ivector-dim 128 --num-iters 5 \
     exp/full_ubm/final.ubm data/train \
     exp/extractor
 fi
@@ -112,7 +112,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=128
+  lda_dim=120
   $train_cmd exp/ivectors_train/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train/ivector.scp ark:- |" \
@@ -151,4 +151,13 @@ if [ $stage -le 7 ]; then
 # EER: 13.69%
 # minDCF(p-target=0.01): 0.9360
 # minDCF(p-target=0.001): 0.9360
+
+# 1024 UBM 256-128
+# EER: 14.14%
+# minDCF(p-target=0.01): 0.9375
+# minDCF(p-target=0.001): 0.9375
+
+
+
+
 fi
