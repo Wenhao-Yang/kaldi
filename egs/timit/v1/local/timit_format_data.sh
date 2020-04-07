@@ -25,7 +25,7 @@ for x in train dev test; do
   utils/filter_scp.pl data/$x/spk2utt $srcdir/$x.spk2gender > data/$x/spk2gender || exit 1;
   # cp $srcdir/${x}.stm data/$x/stm
   # cp $srcdir/${x}.glm data/$x/glm
-  utils/validate_data_dir.sh --no-feats data/$x || exit 1
+  utils/validate_data_dir.sh --no-text --no-feats data/$x || exit 1
 done
 
 # Next, for each type of language model, create the corresponding FST
