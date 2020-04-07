@@ -27,7 +27,7 @@ train=data/train
 test=data/test
 
 
-stage=3
+stage=2
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -71,7 +71,7 @@ if [ $stage -le 2 ]; then
     exp/diag_ubm
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 4G" \
-    --nj 12 --remove-low-count-gaussians false \
+    --nj 12 --remove-low-count-gaussians true \
     data/train \
     exp/diag_ubm exp/full_ubm
 fi
@@ -157,7 +157,10 @@ if [ $stage -le 7 ]; then
 # minDCF(p-target=0.01): 0.9375
 # minDCF(p-target=0.001): 0.9375
 
-
+# 1024 UBM 128-120
+# EER: 8.78%
+# minDCF(p-target=0.01): 0.9288
+# minDCF(p-target=0.001): 0.9330
 
 
 fi
