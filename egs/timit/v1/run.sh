@@ -40,7 +40,7 @@ if [ $stage -le 0 ]; then
   #   cp ${timit_root}/test/* ${test}
   # fi
   local/timit_data_prep.sh $timit_root || exit 1
-  local/timit_prepare_dict.sh
+  local/timit_format_data.sh
 
   for name in ${train} ${test} ; do
     utils/fix_data_dir.sh ${name}

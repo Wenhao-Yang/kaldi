@@ -10,8 +10,8 @@ if [ $# -ne 1 ]; then
 fi
 
 dir=`pwd`/data/local/data
-lmdir=`pwd`/data/local/nist_lm
-mkdir -p $dir $lmdir
+# lmdir=`pwd`/data/local/nist_lm
+# mkdir -p $dir $lmdir
 local=`pwd`/local
 utils=`pwd`/utils
 conf=`pwd`/conf
@@ -92,7 +92,7 @@ for x in train dev test; do
     | sort -k1,1 > ${x}.trans
 
   # Do normalization steps.
-  cat ${x}.trans | $local/timit_norm_trans.pl -i - -m $conf/phones.60-48-39.map -to 48 | sort > $x.text || exit 1;
+  # cat ${x}.trans | $local/timit_norm_trans.pl -i - -m $conf/phones.60-48-39.map -to 48 | sort > $x.text || exit 1;
 
   # Create wav.scp
   awk '{printf("%s '$sph2pipe' -f wav %s |\n", $1, $2);}' < ${x}_sph.scp > ${x}_wav.scp
@@ -106,23 +106,23 @@ for x in train dev test; do
 
   # Prepare STM file for sclite:
   wav-to-duration --read-entire-file=true scp:${x}_wav.scp ark,t:${x}_dur.ark || exit 1
-  awk -v dur=${x}_dur.ark \
-  'BEGIN{
-     while(getline < dur) { durH[$1]=$2; }
-     print ";; LABEL \"O\" \"Overall\" \"Overall\"";
-     print ";; LABEL \"F\" \"Female\" \"Female speakers\"";
-     print ";; LABEL \"M\" \"Male\" \"Male speakers\"";
-   }
-   { wav=$1; spk=wav; sub(/_.*/,"",spk); $1=""; ref=$0;
-     gender=(substr(spk,0,1) == "f" ? "F" : "M");
-     printf("%s 1 %s 0.0 %f <O,%s> %s\n", wav, spk, durH[wav], gender, ref);
-   }
-  ' ${x}.text >${x}.stm || exit 1
+  # awk -v dur=${x}_dur.ark \
+  # 'BEGIN{
+  #    while(getline < dur) { durH[$1]=$2; }
+  #    print ";; LABEL \"O\" \"Overall\" \"Overall\"";
+  #    print ";; LABEL \"F\" \"Female\" \"Female speakers\"";
+  #    print ";; LABEL \"M\" \"Male\" \"Male speakers\"";
+  #  }
+  #  { wav=$1; spk=wav; sub(/_.*/,"",spk); $1=""; ref=$0;
+  #    gender=(substr(spk,0,1) == "f" ? "F" : "M");
+  #    printf("%s 1 %s 0.0 %f <O,%s> %s\n", wav, spk, durH[wav], gender, ref);
+  #  }
+  # ' ${x}.text >${x}.stm || exit 1
 
-  # Create dummy GLM file for sclite:
-  echo ';; empty.glm
-  [FAKE]     =>  %HESITATION     / [ ] __ [ ] ;; hesitation token
-  ' > ${x}.glm
+  # # Create dummy GLM file for sclite:
+  # echo ';; empty.glm
+  # [FAKE]     =>  %HESITATION     / [ ] __ [ ] ;; hesitation token
+  # ' > ${x}.glm
 done
 
 echo "Data preparation succeeded"
