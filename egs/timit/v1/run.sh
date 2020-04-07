@@ -14,27 +14,33 @@ set -e
 mfccdir=`pwd`/mfcc
 vaddir=`pwd`/mfcc
 
+# sph2pipe=$KALDI_ROOT/tools/sph2pipe_v2.5/sph2pipe
+
+
 # The trials file is downloaded by local/make_timit_v2.pl.
 # timit_trials=data/timit_test/trials
 # timit_root=/export/corpora/VoxCeleb1
 # voxceleb2_root=/export/corpora/VoxCeleb2
-timit_root=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit
+timit_root=/data/timit
 timit_trials=data/test/trials
 train=data/train
 test=data/test
 
+
 stage=0
 
 if [ $stage -le 0 ]; then
-  if [ ! -d ${train} ]; then
-    mkdir -p ${train}
-    cp ${timit_root}/train/* ${train}
-  fi
+  # if [ ! -d ${train} ]; then
+  #   mkdir -p ${train}
+  #   cp ${timit_root}/train/* ${train}
+  # fi
 
-  if [ ! -d ${test} ]; then
-    mkdir -p ${test}
-    cp ${timit_root}/test/* ${test}
-  fi
+  # if [ ! -d ${test} ]; then
+  #   mkdir -p ${test}
+  #   cp ${timit_root}/test/* ${test}
+  # fi
+  local/timit_data_prep.sh $timit_root || exit 1
+  local/timit_prepare_dict.sh
 
   for name in ${train} ${test} ; do
     utils/fix_data_dir.sh ${name}
