@@ -27,7 +27,7 @@ train=data/train
 test=data/test
 
 
-stage=0
+stage=3
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -89,7 +89,7 @@ if [ $stage -le 3 ]; then
   #   --utt-list <(sort -n -k 2 data/train/utt2num_frames | tail -n 100000) \
   #   data/train data/train_100k
   # # Train the i-vector extractor.
-  sid/train_ivector_extractor.sh --cmd "$train_cmd --mem 16G" \
+  sid/train_ivector_extractor.sh --cmd "$train_cmd" \
     --ivector-dim 400 --num-iters 5 \
     exp/full_ubm/final.ubm data/train \
     exp/extractor
