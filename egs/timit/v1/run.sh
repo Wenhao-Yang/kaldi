@@ -72,6 +72,7 @@ if [ $stage -le 2 ]; then
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 4G" \
     --nj 12 --remove-low-count-gaussians true \
+    --min-gaussian-weigh 1.0e-4 \
     data/train \
     exp/diag_ubm exp/full_ubm
 fi
@@ -162,5 +163,9 @@ if [ $stage -le 7 ]; then
 # minDCF(p-target=0.01): 0.9288
 # minDCF(p-target=0.001): 0.9330
 
+# 1024 UBM remove<1e-5 128-120
+# EER: 7.738%
+# minDCF(p-target=0.01): 0.8899
+# minDCF(p-target=0.001): 0.8899
 
 fi
