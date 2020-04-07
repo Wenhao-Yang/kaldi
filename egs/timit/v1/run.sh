@@ -27,7 +27,7 @@ train=data/train
 test=data/test
 
 
-stage=4
+stage=5
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -110,7 +110,7 @@ if [ $stage -le 5 ]; then
   $train_cmd exp/ivectors_train/log/compute_mean.log \
     ivector-mean scp:exp/ivectors_train/ivector.scp \
     exp/ivectors_train/mean.vec || exit 1;
-s
+
   # This script uses LDA to decrease the dimensionality prior to PLDA.
   lda_dim=200
   $train_cmd exp/ivectors_train/log/lda.log \
