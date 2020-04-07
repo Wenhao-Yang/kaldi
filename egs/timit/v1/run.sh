@@ -26,9 +26,15 @@ test=data/test
 stage=0
 
 if [ $stage -le 0 ]; then
-  cp ${timit_root}/train ${train}
-  cp ${timit_root}/test %{test}
-  
+  if [ ! -d ${train} ]; then
+    mkdir ${train}
+
+  if [ ! -d ${test} ]; then
+    mkdir ${test}
+
+  cp ${timit_root}/train/* ${train}
+  cp ${timit_root}/test/* %{test}
+
   for name in ${train} ${test} ; do
     utils/validate_data_dir.sh --no-text --no-feats ${name}
     utils/fix_data_dir.sh ${name}
