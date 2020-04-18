@@ -23,11 +23,15 @@ vaddir=`pwd`/mfcc
 # voxceleb2_root=/export/corpora/VoxCeleb2
 timit_root=/data/timit
 timit_trials=data/test/trials
-train=data/train
-test=data/test
 
+# train=data/train
+# test=data/test
 
-stage=5
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb64_20
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb64_20
+datafrom=py64
+
+stage=2
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -65,16 +69,17 @@ fi
 if [ $stage -le 2 ]; then
   # Train the UBM.
   # 训练2048的diag GMM
+  #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 4G" \
     --nj 12 --num-threads 8 \
-    data/train 512 \
-    exp/diag_ubm
+    ${train} 512 \
+    exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 4G" \
     --nj 12 --remove-low-count-gaussians true \
     --min-gaussian-weight 1.0e-4 \
-    data/train \
-    exp/diag_ubm exp/full_ubm
+    ${train} \
+    exp/diag_ubm_${datafrom} exp/full_ubm_${datafrom}
 fi
 
 if [ $stage -le 3 ]; then
@@ -92,55 +97,55 @@ if [ $stage -le 3 ]; then
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
     --ivector-dim 128 --num-iters 5 \
-    exp/full_ubm/final.ubm data/train \
-    exp/extractor
+    exp/full_ubm_${datafrom}/final.ubm ${train} \
+    exp/extractor_${datafrom}
 fi
 
 if [ $stage -le 4 ]; then
   sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 12 \
-    exp/extractor data/train \
-    exp/ivectors_train
+    exp/extractor_${datafrom} ${train} \
+    exp/ivectors_train_${datafrom}
 
   sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 8 \
-    exp/extractor data/test \
-    exp/ivectors_timit_test
+    exp/extractor_${datafrom} ${test} \
+    exp/ivectors_timit_test_${datafrom}
 fi
 
 if [ $stage -le 5 ]; then
   # Compute the mean vector for centering the evaluation i-vectors.
-  $train_cmd exp/ivectors_train/log/compute_mean.log \
-    ivector-mean scp:exp/ivectors_train/ivector.scp \
-    exp/ivectors_train/mean.vec || exit 1;
+  $train_cmd exp/ivectors_train_${datafrom}/log/compute_mean.log \
+    ivector-mean scp:exp/ivectors_train_${datafrom}/ivector.scp \
+    exp/ivectors_train_${datafrom}/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
   lda_dim=128
-  $train_cmd exp/ivectors_train/log/lda.log \
+  $train_cmd exp/ivectors_train_${datafrom}/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
-    "ark:ivector-subtract-global-mean scp:exp/ivectors_train/ivector.scp ark:- |" \
-    ark:data/train/utt2spk exp/ivectors_train/transform.mat || exit 1;
+    "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- |" \
+    ark:${train}/utt2spk exp/ivectors_train_${datafrom}/transform.mat || exit 1;
 
   # Train the PLDA model.
   $train_cmd exp/ivectors_train/log/plda.log \
     ivector-compute-plda ark:data/train/spk2utt \
-    "ark:ivector-subtract-global-mean scp:exp/ivectors_train/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:-  ark:- |" \
-    exp/ivectors_train/plda || exit 1;
+    "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:-  ark:- |" \
+    exp/ivectors_train_${datafrom}/plda || exit 1;
 fi
 
 if [ $stage -le 6 ]; then
-  $train_cmd exp/scores/log/timit_test_scoring.log \
+  $train_cmd exp/scores/log/timit_test__${datafrom}_scoring.log \
     ivector-plda-scoring --normalize-length=true \
-    "ivector-copy-plda --smoothing=0.0 exp/ivectors_train/plda - |" \
-    "ark:ivector-subtract-global-mean exp/ivectors_train/mean.vec scp:exp/ivectors_timit_test/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
-    "ark:ivector-subtract-global-mean exp/ivectors_train/mean.vec scp:exp/ivectors_timit_test/ivector.scp ark:- | transform-vec exp/ivectors_train/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
+    "ivector-copy-plda --smoothing=0.0 exp/ivectors_train_${datafrom}/plda - |" \
+    "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_timit_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
+    "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_timit_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
     "cat '$timit_trials' | cut -d\  --fields=1,2 |" exp/scores_timit_test || exit 1;
 fi
 
 if [ $stage -le 7 ]; then
-  eer=`compute-eer <(local/prepare_for_eer.py $timit_trials exp/scores_timit_test) 2> /dev/null`
-  sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test $timit_trials
-  sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test $timit_trials
-  mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test $timit_trials 2> /dev/null`
-  mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test $timit_trials 2> /dev/null`
+  eer=`compute-eer <(local/prepare_for_eer.py $timit_trials exp/scores_timit_test_${datafrom}) 2> /dev/null`
+  sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials
+  sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials
+  # mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
+  # mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
   echo "EER: $eer%"
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
