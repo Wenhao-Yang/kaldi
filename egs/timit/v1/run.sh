@@ -31,9 +31,9 @@ timit_root=/data/timit
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_20
 # datafrom=py24_dnn
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb64_20
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb64_20
-datafrom=py64
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_20
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_20
+datafrom=py40
 
 timit_trials=${test}/trials
 
@@ -76,12 +76,12 @@ if [ $stage -le 2 ]; then
   # Train the UBM.
   # 训练2048的diag GMM
   #
-  sid/train_diag_ubm.sh --cmd "$train_cmd --mem 4G" \
+  sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
     ${train} 512 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
-  sid/train_full_ubm.sh --cmd "$train_cmd --mem 4G" \
+  sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --remove-low-count-gaussians true \
     --min-gaussian-weight 1.0e-4 \
     ${train} \
