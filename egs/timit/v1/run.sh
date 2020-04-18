@@ -27,12 +27,12 @@ timit_root=/data/timit
 # train=data/train
 # test=data/test
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_20
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_20
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_20
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_20
 timit_trials=${test}/trials
-datafrom=py24
+datafrom=py24_dnn
 
-stage=5
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -143,10 +143,10 @@ fi
 
 if [ $stage -le 7 ]; then
   eer=`compute-eer <(local/prepare_for_eer.py $timit_trials exp/scores_timit_test_${datafrom}) 2> /dev/null`
-  sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials
-  sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials
-  # mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
-  # mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
+  # sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials
+  # sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials
+  mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
+  mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
   echo "EER: $eer%"
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
@@ -186,5 +186,9 @@ if [ $stage -le 7 ]; then
 # minDCF(p-target=0.01): 0.4375
 # minDCF(p-target=0.001): 0.4375
 
+# fb24 512 UBM remove<1e-4 128-128
+# EER: 3.849%
+# minDCF(p-target=0.01): 0.5722
+# minDCF(p-target=0.001): 0.9368
 
 fi
