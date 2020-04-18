@@ -78,12 +78,11 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 640 \
+    ${train} 512 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --remove-low-count-gaussians true \
-    --min-gaussian-weight 1.0e-4 \
     ${train} \
     exp/diag_ubm_${datafrom} exp/full_ubm_${datafrom}
 fi
