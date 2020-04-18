@@ -137,6 +137,8 @@ fi
 
 if [ $stage -le 7 ]; then
   eer=`compute-eer <(local/prepare_for_eer.py $timit_trials exp/scores_timit_test) 2> /dev/null`
+  sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test $timit_trials
+  sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test $timit_trials
   mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test $timit_trials 2> /dev/null`
   mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test $timit_trials 2> /dev/null`
   echo "EER: $eer%"
@@ -172,5 +174,11 @@ if [ $stage -le 7 ]; then
 # EER: 2.232%
 # minDCF(p-target=0.01): 0.4688
 # minDCF(p-target=0.001): 0.4688
+
+# 512 UBM remove<1e-4 128-128
+# EER: 2.381%
+# minDCF(p-target=0.01): 0.4375
+# minDCF(p-target=0.001): 0.4375
+
 
 fi
