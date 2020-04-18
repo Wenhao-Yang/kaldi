@@ -169,8 +169,8 @@ if [ $stage -le 7 ]; then
 # minDCF(p-target=0.001): 0.8899
 
 # 512 UBM remove<1e-4 128-120
-EER: 2.232%
-minDCF(p-target=0.01): 0.4688
-minDCF(p-target=0.001): 0.4688
+# EER: 2.232%
+# minDCF(p-target=0.01): 0.4688
+# minDCF(p-target=0.001): 0.4688
 
 fi
