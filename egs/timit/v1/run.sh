@@ -22,16 +22,17 @@ vaddir=`pwd`/mfcc
 # timit_root=/export/corpora/VoxCeleb1
 # voxceleb2_root=/export/corpora/VoxCeleb2
 timit_root=/data/timit
-timit_trials=data/test/trials
+
 
 # train=data/train
 # test=data/test
 
 train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_20
 test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_20
+timit_trials=${test}/trials
 datafrom=py24
 
-stage=1
+stage=5
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
