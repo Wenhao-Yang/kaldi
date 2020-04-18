@@ -31,13 +31,13 @@ timit_root=/data/timit
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_20
 # datafrom=py24_dnn
 
-# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
-# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
-# datafrom=py40_dnn
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
+datafrom=py40_dnn
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_mfcc_20
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_mfcc_20
-datafrom=mfcc
+# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_mfcc_20
+# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_mfcc_20
+# datafrom=mfcc
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_mfcc_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_mfcc_dnn_20
