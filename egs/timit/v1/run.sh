@@ -126,8 +126,8 @@ if [ $stage -le 5 ]; then
     ark:${train}/utt2spk exp/ivectors_train_${datafrom}/transform.mat || exit 1;
 
   # Train the PLDA model.
-  $train_cmd exp/ivectors_train/log/plda.log \
-    ivector-compute-plda ark:data/train/spk2utt \
+  $train_cmd exp/ivectors_train_${datafrom}/log/plda.log \
+    ivector-compute-plda ark:${train}/spk2utt \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:-  ark:- |" \
     exp/ivectors_train_${datafrom}/plda || exit 1;
 fi
