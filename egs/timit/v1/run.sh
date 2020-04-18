@@ -31,7 +31,7 @@ train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_
 test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb64_20
 datafrom=py64
 
-stage=2
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -55,14 +55,14 @@ fi
 
 if [ $stage -le 1 ]; then
   # Make MFCCs and compute the energy-based VAD for each dataset
-  for name in train test; do
-    steps/make_mfcc.sh --write-utt2num-frames true \
-      --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
-      data/${name} exp/make_mfcc $mfccdir
-    utils/fix_data_dir.sh data/${name}
+  for name in ${train} ${test}; do
+    # steps/make_mfcc.sh --write-utt2num-frames true \
+    #   --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
+    #   data/${name} exp/make_mfcc $mfccdir
+    # utils/fix_data_dir.sh data/${name}
     sid/compute_vad_decision.sh --nj 8 --cmd "$train_cmd" \
-      data/${name} exp/make_vad $vaddir
-    utils/fix_data_dir.sh data/${name}
+      ${name} exp/make_vad_${datafrom} $vaddir
+    utils/fix_data_dir.sh ${name}
   done
 fi
 
