@@ -78,7 +78,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 512 \
+    ${train} 640 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -207,8 +207,8 @@ if [ $stage -le 7 ]; then
 # minDCF(p-target=0.001): 0.9821
 
 # dnn.fb40 512 UBM remove<1e-4 128-128
-# EER: 3.783%
-# minDCF(p-target=0.01): 0.5188
-# minDCF(p-target=0.001): 0.8144
+# EER: 5.013%
+# minDCF(p-target=0.01): 0.7062
+# minDCF(p-target=0.001): 0.9493
 
 fi
