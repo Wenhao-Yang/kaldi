@@ -133,12 +133,12 @@ if [ $stage -le 5 ]; then
 fi
 
 if [ $stage -le 6 ]; then
-  $train_cmd exp/scores/log/timit_test__${datafrom}_scoring.log \
+  $train_cmd exp/scores/log/timit_test_${datafrom}_scoring.log \
     ivector-plda-scoring --normalize-length=true \
     "ivector-copy-plda --smoothing=0.0 exp/ivectors_train_${datafrom}/plda - |" \
     "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_timit_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
     "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_timit_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
-    "cat '$timit_trials' | cut -d\  --fields=1,2 |" exp/scores_timit_test || exit 1;
+    "cat '$timit_trials' | cut -d\  --fields=1,2 |" exp/scores_timit_test_${datafrom} || exit 1;
 fi
 
 if [ $stage -le 7 ]; then
