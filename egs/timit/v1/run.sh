@@ -27,9 +27,9 @@ timit_trials=data/test/trials
 # train=data/train
 # test=data/test
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb64_20
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb64_20
-datafrom=py64
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_20
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_20
+datafrom=py24
 
 stage=1
 
