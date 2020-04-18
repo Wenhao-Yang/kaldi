@@ -27,10 +27,15 @@ timit_root=/data/timit
 # train=data/train
 # test=data/test
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_20
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_20
+# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_20
+# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_20
+# datafrom=py24_dnn
+
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb64_20
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb64_20
+datafrom=py64
+
 timit_trials=${test}/trials
-datafrom=py24_dnn
 
 stage=1
 
@@ -190,5 +195,11 @@ if [ $stage -le 7 ]; then
 # EER: 3.849%
 # minDCF(p-target=0.01): 0.5722
 # minDCF(p-target=0.001): 0.9368
+
+# dnn.fb24 512 UBM remove<1e-4 128-128
+# EER: 3.783%
+# minDCF(p-target=0.01): 0.5188
+# minDCF(p-target=0.001): 0.8144
+
 
 fi
