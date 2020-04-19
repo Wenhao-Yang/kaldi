@@ -17,50 +17,47 @@ vaddir=`pwd`/mfcc
 # sph2pipe=$KALDI_ROOT/tools/sph2pipe_v2.5/sph2pipe
 
 
-# The trials file is downloaded by local/make_timit_v2.pl.
-# timit_trials=data/timit_test/trials
-# timit_root=/export/corpora/VoxCeleb1
+# The trials file is downloaded by local/make_vox1_v2.pl.
+# vox1_trials=data/vox1_test/trials
+# vox1_root=/export/corpora/VoxCeleb1
 # voxceleb2_root=/export/corpora/VoxCeleb2
-timit_root=/data/timit
+vox1_root=/data/vox1
 
 
 # train=data/train
 # test=data/test
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_20
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_20
-datafrom=py24_dnn
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
+datafrom=py24
 
-# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
-# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
+# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_fb40_dnn_20
+# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_fb40_dnn_20
 # datafrom=py40_dnn
 
-# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_mfcc_20
-# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_mfcc_20
+# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_mfcc_20
+# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_mfcc_20
 # datafrom=mfcc
 
-# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_mfcc_dnn_20
-# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_mfcc_dnn_20
+# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_mfcc_dnn_20
+# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_mfcc_dnn_20
 # datafrom=mfcc_dnn
 
 
-timit_trials=${test}/trials
+vox1_trials=${test}/trials
 
 stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
   #   mkdir -p ${train}
-  #   cp ${timit_root}/train/* ${train}
+  #   cp ${vox1_root}/train/* ${train}
   # fi
 
   # if [ ! -d ${test} ]; then
   #   mkdir -p ${test}
-  #   cp ${timit_root}/test/* ${test}
+  #   cp ${vox1_root}/test/* ${test}
   # fi
-  local/timit_data_prep.sh $timit_root || exit 1
-  local/timit_format_data.sh
-
   for name in ${train} ${test} ; do
     utils/fix_data_dir.sh ${name}
     utils/validate_data_dir.sh --no-text --no-feats ${name}
@@ -87,7 +84,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 512 \
+    ${train} 2048 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -110,7 +107,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
-    --ivector-dim 128 --num-iters 5 \
+    --ivector-dim 256 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
 fi
@@ -122,7 +119,7 @@ if [ $stage -le 4 ]; then
 
   sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 8 \
     exp/extractor_${datafrom} ${test} \
-    exp/ivectors_timit_test_${datafrom}
+    exp/ivectors_vox1_test_${datafrom}
 fi
 
 if [ $stage -le 5 ]; then
@@ -132,7 +129,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train_${datafrom}/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=128
+  lda_dim=256
   $train_cmd exp/ivectors_train_${datafrom}/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- |" \
@@ -146,87 +143,22 @@ if [ $stage -le 5 ]; then
 fi
 
 if [ $stage -le 6 ]; then
-  $train_cmd exp/scores/log/timit_test_${datafrom}_scoring.log \
+  $train_cmd exp/scores/log/vox1_test_${datafrom}_scoring.log \
     ivector-plda-scoring --normalize-length=true \
     "ivector-copy-plda --smoothing=0.0 exp/ivectors_train_${datafrom}/plda - |" \
-    "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_timit_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
-    "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_timit_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
-    "cat '$timit_trials' | cut -d\  --fields=1,2 |" exp/scores_timit_test_${datafrom} || exit 1;
+    "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_vox1_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
+    "ark:ivector-subtract-global-mean exp/ivectors_train_${datafrom}/mean.vec scp:exp/ivectors_vox1_test_${datafrom}/ivector.scp ark:- | transform-vec exp/ivectors_train_${datafrom}/transform.mat ark:- ark:- | ivector-normalize-length ark:- ark:- |" \
+    "cat '$vox1_trials' | cut -d\  --fields=1,2 |" exp/scores_vox1_test_${datafrom} || exit 1;
 fi
 
 if [ $stage -le 7 ]; then
-  eer=`compute-eer <(local/prepare_for_eer.py $timit_trials exp/scores_timit_test_${datafrom}) 2> /dev/null`
-  # sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials
-  # sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials
-  mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
-  mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_timit_test_${datafrom} $timit_trials 2> /dev/null`
+  eer=`compute-eer <(local/prepare_for_eer.py $vox1_trials exp/scores_vox1_test_${datafrom}) 2> /dev/null`
+  # sid/compute_min_dcf.py --p-target 0.01 exp/scores_vox1_test_${datafrom} $vox1_trials
+  # sid/compute_min_dcf.py --p-target 0.001 exp/scores_vox1_test_${datafrom} $vox1_trials
+  mindcf1=`sid/compute_min_dcf.py --p-target 0.01 exp/scores_vox1_test_${datafrom} $vox1_trials 2> /dev/null`
+  mindcf2=`sid/compute_min_dcf.py --p-target 0.001 exp/scores_vox1_test_${datafrom} $vox1_trials 2> /dev/null`
   echo "EER: $eer%"
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
-
-# 2048 UBM 400-200
-# EER: 31.1%
-# minDCF(p-target=0.01): 0.9926
-# minDCF(p-target=0.001): 0.9926
-
-# 1024 UBM 256-196
-# EER: 13.69%
-# minDCF(p-target=0.01): 0.9360
-# minDCF(p-target=0.001): 0.9360
-
-# 1024 UBM 256-128
-# EER: 14.14%
-# minDCF(p-target=0.01): 0.9375
-# minDCF(p-target=0.001): 0.9375
-
-# 1024 UBM 128-120
-# EER: 8.78%
-# minDCF(p-target=0.01): 0.9288
-# minDCF(p-target=0.001): 0.9330
-
-# 1024 UBM remove<1e-5 128-120
-# EER: 7.738%
-# minDCF(p-target=0.01): 0.8899
-# minDCF(p-target=0.001): 0.8899
-
-# 512 UBM remove<1e-4 128-120
-# EER: 2.232%
-# minDCF(p-target=0.01): 0.4688
-# minDCF(p-target=0.001): 0.4688
-
-# 512 UBM remove<1e-4 128-128
-# EER: 2.381%
-# minDCF(p-target=0.01): 0.4375
-# minDCF(p-target=0.001): 0.4375
-
-# fb24 512 UBM remove<1e-4 128-128
-# EER: 3.849%
-# minDCF(p-target=0.01): 0.5722
-# minDCF(p-target=0.001): 0.9368
-
-# dnn.fb24 512 UBM remove<1e-4 128-128
-# EER: 3.783%
-# minDCF(p-target=0.01): 0.5188
-# minDCF(p-target=0.001): 0.8144
-
-# var dnn.fb24 512 UBM remove<1e-4 128-128
-# EER: 3.611%
-# minDCF(p-target=0.01): 0.5272
-# minDCF(p-target=0.001): 0.8311
-
-# fb40 512 UBM remove<1e-4 128-128
-# EER: 4.947%
-# minDCF(p-target=0.01): 0.7026
-# minDCF(p-target=0.001): 0.9821
-
-# fix dnn.fb40 512 UBM remove<1e-4 128-128
-# EER: 5.013%
-# minDCF(p-target=0.01): 0.7062
-# minDCF(p-target=0.001): 0.9493
-
-# var dnn.fb40 512 UBM remove<1e-4 128-128
-# EER: 5.212%
-# minDCF(p-target=0.01): 0.6990
-# minDCF(p-target=0.001): 0.9407
 
 fi
