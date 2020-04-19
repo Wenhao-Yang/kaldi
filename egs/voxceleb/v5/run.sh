@@ -12,7 +12,7 @@
 . ./path.sh
 set -e
 mfccdir=`pwd`/mfcc
-vaddir=`pwd`/mfcc
+vaddir=`pwd`/data/vad
 
 # sph2pipe=$KALDI_ROOT/tools/sph2pipe_v2.5/sph2pipe
 
@@ -21,7 +21,7 @@ vaddir=`pwd`/mfcc
 # vox1_trials=data/vox1_test/trials
 # vox1_root=/export/corpora/VoxCeleb1
 # voxceleb2_root=/export/corpora/VoxCeleb2
-vox1_root=/data/vox1
+#vox1_root=/data/vox1
 
 
 # train=data/train
