@@ -72,7 +72,7 @@ if [ $stage -le 1 ]; then
     #   --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
     #   data/${name} exp/make_mfcc $mfccdir
     # utils/fix_data_dir.sh data/${name}
-    sid/compute_vad_decision.sh --nj 8 --cmd "$train_cmd" \
+    sid/compute_vad_decision.sh --nj 12 --cmd "$train_cmd" \
       ${name} exp/make_vad_${datafrom} $vaddir
     utils/fix_data_dir.sh ${name}
   done
@@ -107,17 +107,17 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
-    --ivector-dim 256 --num-iters 5 \
+    --ivector-dim 128 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
 fi
 
 if [ $stage -le 4 ]; then
-  sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 12 \
+  sid/extract_ivectors.sh --cmd "$train_cmd --mem 8G" --nj 12 \
     exp/extractor_${datafrom} ${train} \
     exp/ivectors_train_${datafrom}
 
-  sid/extract_ivectors.sh --cmd "$train_cmd --mem 4G" --nj 8 \
+  sid/extract_ivectors.sh --cmd "$train_cmd --mem 8G" --nj 8 \
     exp/extractor_${datafrom} ${test} \
     exp/ivectors_vox1_test_${datafrom}
 fi
@@ -129,7 +129,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train_${datafrom}/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=256
+  lda_dim=128
   $train_cmd exp/ivectors_train_${datafrom}/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- |" \
