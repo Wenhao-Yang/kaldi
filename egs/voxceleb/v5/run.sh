@@ -27,9 +27,13 @@ vaddir=`pwd`/data/vad
 # train=data/train
 # test=data/test
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
-datafrom=py24
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
+#datafrom=py24
+
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24_dnn
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24_dnn
+datafrom=py24_dnn
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_fb40_dnn_20
@@ -162,3 +166,10 @@ if [ $stage -le 7 ]; then
   echo "minDCF(p-target=0.001): $mindcf2"
 
 fi
+
+# fb24 GMM 2048
+
+#EER: 6.66%
+#minDCF(p-target=0.01): 0.5668
+#minDCF(p-target=0.001): 0.6931
+
