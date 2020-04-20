@@ -50,7 +50,7 @@ datafrom=py24_dnn
 
 vox1_trials=${test}/trials
 
-stage=1
+stage=3
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -111,7 +111,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
-    --ivector-dim 128 --num-iters 5 \
+    --ivector-dim 1024 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
 fi
@@ -133,7 +133,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train_${datafrom}/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=128
+  lda_dim=1024
   $train_cmd exp/ivectors_train_${datafrom}/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- |" \
@@ -172,4 +172,9 @@ fi
 #EER: 6.66%
 #minDCF(p-target=0.01): 0.5668
 #minDCF(p-target=0.001): 0.6931
+
+# fb24 GMM 2048
+#EER: 6.707%
+#minDCF(p-target=0.01): 0.5776
+#minDCF(p-target=0.001): 0.7098
 
