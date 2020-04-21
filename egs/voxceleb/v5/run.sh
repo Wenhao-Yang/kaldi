@@ -27,13 +27,13 @@ vaddir=`pwd`/data/vad
 # train=data/train
 # test=data/test
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
-#datafrom=py24
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
+datafrom=py24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24_dnn
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24_dnn
-datafrom=py24_dnn
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24_dnn
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24_dnn
+#datafrom=py24_dnn
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_fb40_dnn_20
@@ -50,7 +50,7 @@ datafrom=py24_dnn
 
 vox1_trials=${test}/trials
 
-stage=3
+stage=2
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -88,7 +88,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 2048 \
+    ${train} 1024 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -111,7 +111,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 3 --num-processes 2 --num-threads 2 \
-    --ivector-dim 1024 --num-iters 5 \
+    --ivector-dim 128 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
 fi
