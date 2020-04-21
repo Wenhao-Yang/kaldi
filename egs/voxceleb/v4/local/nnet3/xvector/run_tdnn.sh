@@ -13,7 +13,7 @@
 . ./cmd.sh
 set -e
 
-stage=1
+stage=7
 train_stage=0
 use_gpu=true
 remove_egs=false
