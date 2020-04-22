@@ -27,13 +27,13 @@ vaddir=`pwd`/data/vad
 # train=data/train
 # test=data/test
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
-datafrom=py24
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
+#datafrom=py24
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24_dnn
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24_dnn
-#datafrom=py24_dnn
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24_dnn
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24_dnn
+datafrom=py24_dnn
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_fb40_dnn_20
@@ -50,7 +50,7 @@ datafrom=py24
 
 vox1_trials=${test}/trials
 
-stage=5
+stage=0
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
