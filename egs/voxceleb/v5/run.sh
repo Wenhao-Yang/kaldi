@@ -133,7 +133,7 @@ if [ $stage -le 5 ]; then
     exp/ivectors_train_${datafrom}/mean.vec || exit 1;
 
   # This script uses LDA to decrease the dimensionality prior to PLDA.
-  lda_dim=1024
+  lda_dim=128
   $train_cmd exp/ivectors_train_${datafrom}/log/lda.log \
     ivector-compute-lda --total-covariance-factor=0.0 --dim=$lda_dim \
     "ark:ivector-subtract-global-mean scp:exp/ivectors_train_${datafrom}/ivector.scp ark:- |" \
