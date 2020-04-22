@@ -50,7 +50,7 @@ datafrom=py24
 
 vox1_trials=${test}/trials
 
-stage=2
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
