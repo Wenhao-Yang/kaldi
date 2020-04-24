@@ -31,8 +31,8 @@ vaddir=`pwd`/data/vad
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
 #datafrom=py24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24_dnn
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24_dnn
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24
 datafrom=py24_dnn
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_fb40_dnn_20
@@ -50,7 +50,7 @@ datafrom=py24_dnn
 
 vox1_trials=${test}/trials
 
-stage=0
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -177,4 +177,14 @@ fi
 #EER: 6.707%
 #minDCF(p-target=0.01): 0.5776
 #minDCF(p-target=0.001): 0.7098
+
+# fb24 GMM 1024
+#EER: 6.845%
+#minDCF(p-target=0.01): 0.5863
+#minDCF(p-target=0.001): 0.6670
+
+# fb24.dnn GMM 1024
+#EER: 7.253%
+#minDCF(p-target=0.01): 0.6088
+#minDCF(p-target=0.001): 0.7399
 
