@@ -26,8 +26,8 @@ libri_root=/data/libri
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_fb24_dnn_new
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24_wcmvn
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24_wcmvn
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
 datafrom=py24
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_fb40_dnn_20
@@ -69,22 +69,19 @@ fi
 
 if [ $stage -le 1 ]; then
   # Make MFCCs and compute the energy-based VAD for each dataset
-  libri_root=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb
-
-  for name in dev test; do
+  for name in ${train} ${test}; do
     # steps/make_mfcc.sh --write-utt2num-frames true \
     #   --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
     #   data/${name} exp/make_mfcc $mfccdir
     # utils/fix_data_dir.sh data/${name}
     sid/compute_vad_decision.sh --nj 8 --cmd "$train_cmd" \
-      ${libri_root}/${name}_fb24 \
+      ${name} \
        exp/make_vad_${datafrom} \
        $vaddir
-    utils/fix_data_dir.sh ${libri_root}/${name}_fb24
-    cp ${libri_root}/${name}_fb24/vad.scp ${libri_root}/${name}_fb24_wcmvn/
+    utils/fix_data_dir.sh ${name}
   done
 fi
-stage=100
+#stage=100
 if [ $stage -le 2 ]; then
   # Train the UBM.
   # 训练2048的diag GMM
