@@ -12,7 +12,7 @@
 . ./path.sh
 set -e
 mfccdir=`pwd`/mfcc
-vaddir=`pwd`/mfcc
+vaddir=`pwd`/data/vad
 
 # sph2pipe=$KALDI_ROOT/tools/sph2pipe_v2.5/sph2pipe
 
@@ -28,7 +28,7 @@ libri_root=/data/libri
 
 train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24_wcmvn
 test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24_wcmvn
-datafrom=py24_dnn_new
+datafrom=py24
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_fb40_dnn_20
@@ -69,17 +69,22 @@ fi
 
 if [ $stage -le 1 ]; then
   # Make MFCCs and compute the energy-based VAD for each dataset
-  for name in ${train} ${test}; do
+  libri_root=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb
+
+  for name in dev test; do
     # steps/make_mfcc.sh --write-utt2num-frames true \
     #   --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
     #   data/${name} exp/make_mfcc $mfccdir
     # utils/fix_data_dir.sh data/${name}
     sid/compute_vad_decision.sh --nj 8 --cmd "$train_cmd" \
-      ${name} exp/make_vad_${datafrom} $vaddir
-    utils/fix_data_dir.sh ${name}
+      ${libri_root}/${name}_fb24 \
+       exp/make_vad_${datafrom} \
+       $vaddir
+    utils/fix_data_dir.sh ${libri_root}/${name}_fb24
+    cp ${libri_root}/${name}_fb24/vad.scp ${libri_root}/${name}_fb24_wcmvn/
   done
 fi
-
+stage=100
 if [ $stage -le 2 ]; then
   # Train the UBM.
   # 训练2048的diag GMM
