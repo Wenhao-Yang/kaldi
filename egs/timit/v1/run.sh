@@ -285,6 +285,12 @@ fi
 #minDCF(p-target=0.01): 0.6105
 #minDCF(p-target=0.001): 0.9454
 
+#20200425 20:40
+##py30 with mean weight from fix 512GMMs 128
+#EER: 4.153%
+#minDCF(p-target=0.01): 0.5808
+#minDCF(p-target=0.001): 0.8818
+
 #20200425 20:28
 ##py30 with mean weight from var 512GMMs 128
 #EER: 4.246%
