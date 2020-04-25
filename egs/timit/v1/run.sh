@@ -34,7 +34,7 @@ timit_root=/data/timit
 #datafrom=py24
 
 train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 datafrom=dpy24_fix
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
@@ -52,7 +52,7 @@ datafrom=dpy24_fix
 
 timit_trials=${test}/trials
 
-stage=6
+stage=4
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
