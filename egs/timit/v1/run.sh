@@ -29,13 +29,13 @@ timit_root=/data/timit
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_new
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
-#datafrom=py24
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
+datafrom=py24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_dfb24_fix
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_dfb24_fix
-datafrom=dpy24_fix
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_dfb24_fix
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_dfb24_fix
+#datafrom=dpy24_fix
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
@@ -52,7 +52,7 @@ datafrom=dpy24_fix
 
 timit_trials=${test}/trials
 
-stage=1
+stage=6
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -244,3 +244,8 @@ fi
 #EER: 3.796%
 #minDCF(p-target=0.01): 0.5419
 #minDCF(p-target=0.001): 0.9092
+
+#dnnpy24 with variance weight, 512GMMs 128
+#EER: 6.538%
+#minDCF(p-target=0.01): 0.7332
+#minDCF(p-target=0.001): 0.9351
