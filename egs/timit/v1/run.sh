@@ -29,9 +29,13 @@ timit_root=/data/timit
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_new
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
-datafrom=py24_dnn_m
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24
+datafrom=py24
+
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
+#datafrom=py24_dnn_m
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
@@ -77,6 +81,7 @@ if [ $stage -le 1 ]; then
     #   --mfcc-config conf/mfcc.conf --nj 12 --cmd "$train_cmd" \
     #   data/${name} exp/make_mfcc $mfccdir
     # utils/fix_data_dir.sh data/${name}
+#    sid/compute_vad_decision.sh --nj 8  /home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m exp/make_vad_py24_dnn_m data/vad
     sid/compute_vad_decision.sh --nj 8 --cmd "$train_cmd" \
       ${name} exp/make_vad_${datafrom} $vaddir
     utils/fix_data_dir.sh ${name}
