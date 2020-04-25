@@ -33,9 +33,9 @@ train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/t
 test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
 datafrom=py24
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
-#datafrom=py24_dnn_m
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_dfb24_fix
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_dfb24_fix
+#datafrom=dpy24_fix
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
