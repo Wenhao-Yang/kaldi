@@ -29,9 +29,9 @@ timit_root=/data/timit
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_new
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_mv
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_mv
-datafrom=py24_dnn_mv
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
+datafrom=py24_dnn_m
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
