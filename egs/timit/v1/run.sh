@@ -29,13 +29,13 @@ timit_root=/data/timit
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_new
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
-#datafrom=py24
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
+datafrom=py24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
-datafrom=py24_dnn_m
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
+#datafrom=py24_dnn_m
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
@@ -52,7 +52,7 @@ datafrom=py24_dnn_m
 
 timit_trials=${test}/trials
 
-stage=1
+stage=6
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
