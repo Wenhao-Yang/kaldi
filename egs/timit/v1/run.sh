@@ -39,12 +39,12 @@ timit_root=/data/timit
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_var
 #datafrom=dpy24_var
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb30
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb30
-datafrom=py30
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_var
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_var
-#datafrom=dpy24_var
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb30
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb30
+#datafrom=py30
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_var
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_var
+datafrom=dpy30_var
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
@@ -274,3 +274,9 @@ fi
 #EER: 3.638%
 #minDCF(p-target=0.01): 0.5046
 #minDCF(p-target=0.001): 0.8105
+
+#20200425 20:17
+#py30 512GMMs 128
+#EER: 4.127%
+#minDCF(p-target=0.01): 0.6105
+#minDCF(p-target=0.001): 0.9454
