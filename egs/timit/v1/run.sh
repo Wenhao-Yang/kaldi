@@ -33,9 +33,13 @@ timit_root=/data/timit
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
 #datafrom=py24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
-datafrom=dpy24_fix
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
+#datafrom=dpy24_fix
+
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_var
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_var
+datafrom=dpy24_var
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
@@ -87,7 +91,7 @@ if [ $stage -le 1 ]; then
     utils/fix_data_dir.sh ${name}
   done
 fi
-stage=4
+#stage=4
 
 if [ $stage -le 2 ]; then
   # Train the UBM.
@@ -250,3 +254,9 @@ fi
 #EER: 6.538%
 #minDCF(p-target=0.01): 0.7332
 #minDCF(p-target=0.001): 0.9351
+
+#20200425 19:42
+#py24 with mean weight from fix 512GMMs 128
+#EER: 3.73%
+#minDCF(p-target=0.01): 0.5288
+#minDCF(p-target=0.001): 0.7901
