@@ -52,7 +52,7 @@ datafrom=dpy24_fix
 
 timit_trials=${test}/trials
 
-stage=6
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
