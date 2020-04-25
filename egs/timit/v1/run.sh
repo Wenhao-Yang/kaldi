@@ -29,13 +29,13 @@ timit_root=/data/timit
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_new
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
-datafrom=py24
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
+#datafrom=py24
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
-#datafrom=py24_dnn_m
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb24_dnn_m
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_m
+datafrom=py24_dnn_m
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/train_fb40_dnn_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb40_dnn_20
@@ -116,7 +116,7 @@ if [ $stage -le 3 ]; then
   #   --utt-list <(sort -n -k 2 data/train/utt2num_frames | tail -n 100000) \
   #   data/train data/train_100k
   # # Train the i-vector extractor.
-  sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 2\
+  sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 3 \
     --ivector-dim 128 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
