@@ -32,6 +32,10 @@ timit_root=/data/timit
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
 #datafrom=py24
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_lfb24
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_lfb24
+#datafrom=lpy24
+
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
@@ -280,3 +284,9 @@ fi
 #EER: 4.127%
 #minDCF(p-target=0.01): 0.6105
 #minDCF(p-target=0.001): 0.9454
+
+#20200425 20:28
+##py30 with mean weight from var 512GMMs 128
+#EER: 4.246%
+#minDCF(p-target=0.01): 0.5843
+#minDCF(p-target=0.001): 0.9068
