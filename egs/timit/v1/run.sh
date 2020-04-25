@@ -52,7 +52,7 @@ datafrom=dpy24_fix
 
 timit_trials=${test}/trials
 
-stage=4
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -87,6 +87,7 @@ if [ $stage -le 1 ]; then
     utils/fix_data_dir.sh ${name}
   done
 fi
+stage=4
 
 if [ $stage -le 2 ]; then
   # Train the UBM.
