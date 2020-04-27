@@ -26,13 +26,13 @@ libri_root=/data/libri
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_fb24_dnn_new
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
-datafrom=py24
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
+#datafrom=py24
 
-# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_fb40_dnn_20
-# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_fb40_dnn_20
-# datafrom=py40_dnn
+ train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/dev_dfb24_fix
+ test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_dfb24_fix
+ datafrom=dpy24_fix
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_mfcc_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_mfcc_20
@@ -165,10 +165,11 @@ if [ $stage -le 7 ]; then
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
 
-# 512 UBM 128
-# EER: 2.232%
-# minDCF(p-target=0.01): 0.4688
-# minDCF(p-target=0.001): 0.4688
+# VAD 5.5 0.5
+# fb24 512 UBM 128
+#EER: 2.67%
+#minDCF(p-target=0.01): 0.7224
+#minDCF(p-target=0.001): 0.9962
 
 
 fi
