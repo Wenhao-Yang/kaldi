@@ -30,8 +30,8 @@ libri_root=/data/libri
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
 #datafrom=py24
 
- train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/dev_dfb24_fix
- test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_dfb24_fix
+ train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_fix
+ test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix
  datafrom=dpy24_fix
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_mfcc_20
