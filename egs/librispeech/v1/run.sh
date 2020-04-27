@@ -165,25 +165,10 @@ if [ $stage -le 7 ]; then
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
 
-# 512 UBM remove<1e-4 128-120
+# 512 UBM 128
 # EER: 2.232%
 # minDCF(p-target=0.01): 0.4688
 # minDCF(p-target=0.001): 0.4688
-
-# 512 UBM remove<1e-4 128-128
-# EER: 2.381%
-# minDCF(p-target=0.01): 0.4375
-# minDCF(p-target=0.001): 0.4375
-
-# fb24 512 UBM remove<1e-4 128-128
-# EER: 3.849%
-# minDCF(p-target=0.01): 0.5722
-# minDCF(p-target=0.001): 0.9368
-
-# dnn.fb24 512 UBM remove<1e-4 128-128
-# EER: 3.783%
-# minDCF(p-target=0.01): 0.5188
-# minDCF(p-target=0.001): 0.8144
 
 
 fi
