@@ -29,9 +29,9 @@ timit_root=/data/timit
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/test_fb24_dnn_new
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
-#datafrom=py24
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24
+datafrom=py24
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_lfb24
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_lfb24
 #datafrom=lpy24
@@ -45,9 +45,9 @@ timit_root=/data/timit
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_var
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_var
 #datafrom=dpy24_var
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_mdv
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_mdv
-datafrom=dpy24_mdv
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_mdv
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_mdv
+#datafrom=dpy24_mdv
 
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb30
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb30
@@ -117,7 +117,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 512 \
+    ${train} 256 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -194,70 +194,6 @@ if [ $stage -le 7 ]; then
   echo "minDCF(p-target=0.01): $mindcf1"
   echo "minDCF(p-target=0.001): $mindcf2"
 
-# 2048 UBM 400-200
-# EER: 31.1%
-# minDCF(p-target=0.01): 0.9926
-# minDCF(p-target=0.001): 0.9926
-
-# 1024 UBM 256-196
-# EER: 13.69%
-# minDCF(p-target=0.01): 0.9360
-# minDCF(p-target=0.001): 0.9360
-
-# 1024 UBM 256-128
-# EER: 14.14%
-# minDCF(p-target=0.01): 0.9375
-# minDCF(p-target=0.001): 0.9375
-
-# 1024 UBM 128-120
-# EER: 8.78%
-# minDCF(p-target=0.01): 0.9288
-# minDCF(p-target=0.001): 0.9330
-
-# 1024 UBM remove<1e-5 128-120
-# EER: 7.738%
-# minDCF(p-target=0.01): 0.8899
-# minDCF(p-target=0.001): 0.8899
-
-# 512 UBM remove<1e-4 128-120
-# EER: 2.232%
-# minDCF(p-target=0.01): 0.4688
-# minDCF(p-target=0.001): 0.4688
-
-# 512 UBM remove<1e-4 128-128
-# EER: 2.381%
-# minDCF(p-target=0.01): 0.4375
-# minDCF(p-target=0.001): 0.4375
-
-# fb24 512 UBM remove<1e-4 128-128
-# EER: 3.849%
-# minDCF(p-target=0.01): 0.5722
-# minDCF(p-target=0.001): 0.9368
-
-# dnn.fb24 512 UBM remove<1e-4 128-128
-# EER: 3.783%
-# minDCF(p-target=0.01): 0.5188
-# minDCF(p-target=0.001): 0.8144
-
-# var dnn.fb24 512 UBM remove<1e-4 128-128
-# EER: 3.611%
-# minDCF(p-target=0.01): 0.5272
-# minDCF(p-target=0.001): 0.8311
-
-# fb40 512 UBM remove<1e-4 128-128
-# EER: 4.947%
-# minDCF(p-target=0.01): 0.7026
-# minDCF(p-target=0.001): 0.9821
-
-# fix dnn.fb40 512 UBM remove<1e-4 128-128
-# EER: 5.013%
-# minDCF(p-target=0.01): 0.7062
-# minDCF(p-target=0.001): 0.9493
-
-# var dnn.fb40 512 UBM remove<1e-4 128-128
-# EER: 5.212%
-# minDCF(p-target=0.01): 0.6990
-# minDCF(p-target=0.001): 0.9407
 
 fi
 
@@ -290,6 +226,18 @@ fi
 #EER: 3.73%
 #minDCF(p-target=0.01): 0.5288
 #minDCF(p-target=0.001): 0.7901
+
+#20200425 21:19
+#py24 with mean/std-min weight from fix 512GMMs 128
+#EER: 3.783%
+#minDCF(p-target=0.01): 0.5330
+#minDCF(p-target=0.001): 0.8437
+
+#20200425 21:19
+#py24 with mean/std weight from fix 512GMMs 128
+#EER: 3.677%
+#minDCF(p-target=0.01): 0.5225
+#minDCF(p-target=0.001): 0.8214
 
 #20200425 19:42
 #py24 with mean weight from var 512GMMs 128
