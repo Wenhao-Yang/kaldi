@@ -26,13 +26,13 @@ libri_root=/data/libri
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_fb24_dnn_new
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
-#datafrom=py24
-
- train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_fix
- test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix
- datafrom=dpy24_fix
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
+datafrom=py24
+#
+# train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_fix
+# test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix
+# datafrom=dpy24_fix
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_mfcc_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_mfcc_20
@@ -172,9 +172,15 @@ if [ $stage -le 7 ]; then
 #minDCF(p-target=0.001): 0.9962
 
 # VAD 5.5 0.5
-# fb24 512 UBM 128
+# dfb24 512 UBM 128
 #EER: 2.833%
 #minDCF(p-target=0.01): 0.7368
 #minDCF(p-target=0.001): 0.9997
+
+# VAD 5.5 0.5
+# dfb24 256 UBM 128
+#EER: 2.702%
+#minDCF(p-target=0.01): 0.7519
+#minDCF(p-target=0.001): 0.9980
 
 fi
