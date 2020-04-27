@@ -88,7 +88,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 512 \
+    ${train} 256 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -171,5 +171,10 @@ if [ $stage -le 7 ]; then
 #minDCF(p-target=0.01): 0.7224
 #minDCF(p-target=0.001): 0.9962
 
+# VAD 5.5 0.5
+# fb24 512 UBM 128
+#EER: 2.833%
+#minDCF(p-target=0.01): 0.7368
+#minDCF(p-target=0.001): 0.9997
 
 fi
