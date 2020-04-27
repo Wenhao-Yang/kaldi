@@ -42,9 +42,9 @@ timit_root=/data/timit
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_vart
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_vart
-datafrom=dpy24_vart
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_tt
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_tt
+datafrom=dpy24_tt
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_mdv
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_mdv
 #datafrom=dpy24_mdv
@@ -272,7 +272,12 @@ fi
 #dpy24 with mean weight from var
 
 # 640 GMMs 128
-#EER: 4.153%
+
+#train - EER: 4.206%
+#minDCF(p-target=0.01): 0.5938
+#minDCF(p-target=0.001): 0.8959
+
+#test - EER: 4.153%
 #minDCF(p-target=0.01): 0.6024
 #minDCF(p-target=0.001): 0.8483
 
