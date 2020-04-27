@@ -42,9 +42,9 @@ timit_root=/data/timit
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_var
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_var
-datafrom=dpy24_var
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_vart
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_vart
+datafrom=dpy24_vart
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_mdv
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_mdv
 #datafrom=dpy24_mdv
@@ -198,36 +198,41 @@ if [ $stage -le 7 ]; then
 fi
 
 # finally results
-#py24 640GMMs 128
+# py24
+# 640GMMs 128
 #EER: 4.603%
 #minDCF(p-target=0.01): 0.6626
 #minDCF(p-target=0.001): 0.9634
 
-#py24 512GMMs 128
+# 512GMMs 128
 #EER: 3.796%
 #minDCF(p-target=0.01): 0.5419
 #minDCF(p-target=0.001): 0.9092
 
-#py24 256 GMMs 128
+# 256 GMMs 128
 #EER: 2.976%
 #minDCF(p-target=0.01): 0.4211
 #minDCF(p-target=0.001): 0.8286
 
+
 #20200425 20:40
-#linear py24 640 GMMs 128
+#linear py24
+# 640 GMMs 128
 #EER: 4.061%
 #minDCF(p-target=0.01): 0.5816
 #minDCF(p-target=0.001): 0.8654
 
-#linear py24 512GMMs 128
+# 512GMMs 128
 #EER: 3.558%
 #minDCF(p-target=0.01): 0.5142
 #minDCF(p-target=0.001): 0.8065
 
-#linear py24 256 GMMs 128
+# 256 GMMs 128
 #EER: 2.804%
 #minDCF(p-target=0.01): 0.4038
 #minDCF(p-target=0.001): 0.6626
+
+
 
 #20200425 21:00
 #amel py24 512GMMs 128
@@ -264,10 +269,24 @@ fi
 #minDCF(p-target=0.001): 0.8214
 
 #20200425 19:42
-#py24 with mean weight from var 512GMMs 128
+#dpy24 with mean weight from var
+
+# 640 GMMs 128
+#EER: 4.153%
+#minDCF(p-target=0.01): 0.6024
+#minDCF(p-target=0.001): 0.8483
+
+# 512 GMMs 128
 #EER: 3.638%
 #minDCF(p-target=0.01): 0.5046
 #minDCF(p-target=0.001): 0.8105
+
+# 256 GMMs 128
+#EER: 2.791%
+#minDCF(p-target=0.01): 0.4039
+#minDCF(p-target=0.001): 0.6152
+
+
 
 #20200425 20:17
 #py30 512GMMs 128
