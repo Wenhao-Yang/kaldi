@@ -117,7 +117,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 512 \
+    ${train} 640 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -250,25 +250,11 @@ fi
 #EER: 3.73%
 #minDCF(p-target=0.01): 0.5288
 #minDCF(p-target=0.001): 0.7901
-#train verification weight
-#EER: 3.836%
-#minDCF(p-target=0.01): 0.5219
-#minDCF(p-target=0.001): 0.7617
 
 #py24 with mean weight from fix 256 GMMs 128
 #EER: 2.791%
 #minDCF(p-target=0.01): 0.4039
 #minDCF(p-target=0.001): 0.6152
-
-#py24 with mean weight from fix 256 GMMs 128
-#train verification weight
-# EER: 2.778%
-#minDCF(p-target=0.01): 0.3823
-#minDCF(p-target=0.001): 0.6537
-# train classifier weight
-# EER: 2.963%
-#minDCF(p-target=0.01): 0.4018
-#minDCF(p-target=0.001): 0.6544
 
 
 
@@ -288,7 +274,6 @@ fi
 #dpy24 with mean weight from var
 
 # 640 GMMs 128
-
 #train - EER: 4.206%
 #minDCF(p-target=0.01): 0.5938
 #minDCF(p-target=0.001): 0.8959
@@ -330,3 +315,24 @@ fi
 #EER: 4.246%
 #minDCF(p-target=0.01): 0.5843
 #minDCF(p-target=0.001): 0.9068
+
+
+#py24 with mean weight from var 512 GMMs 128
+#train classifier weight
+#EER: 3.836%
+#minDCF(p-target=0.01): 0.5219
+#minDCF(p-target=0.001): 0.7617
+#train classifier weight
+#EER: 3.717%
+#minDCF(p-target=0.01): 0.5108
+#minDCF(p-target=0.001): 0.8170
+
+#py24 with mean weight from var 256 GMMs 128
+# train classifier weight
+# EER: 2.963%
+#minDCF(p-target=0.01): 0.4018
+#minDCF(p-target=0.001): 0.6544
+#train verification weight
+# EER: 2.778%
+#minDCF(p-target=0.01): 0.3823
+#minDCF(p-target=0.001): 0.6537
