@@ -178,10 +178,17 @@ if [ $stage -le 7 ]; then
 #minDCF(p-target=0.001): 0.9962
 
 # VAD 5.5 0.5
-# fb24 512 UBM 128
+# fb24 256 UBM 128
 #EER: 2.506%
 #minDCF(p-target=0.01): 0.7093
 #minDCF(p-target=0.001): 0.9983
+
+
+# VAD 5.5 0.5
+# dfb24 640 UBM 128
+#EER: 2.945%
+#minDCF(p-target=0.01): 0.7514
+#minDCF(p-target=0.001): 0.9981
 
 # VAD 5.5 0.5
 # dfb24 512 UBM 128
