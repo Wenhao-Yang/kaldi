@@ -32,7 +32,7 @@ libri_root=/data/libri
 #
 train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_64
 test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_64
-datafrom=dpy24_fix
+datafrom=dpy24_64
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_fix
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix
