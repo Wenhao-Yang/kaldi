@@ -31,13 +31,13 @@ vaddir=`pwd`/data/vad
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
 #datafrom=py24
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24
-#datafrom=py24_dnn
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24
+datafrom=py24_dnn
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24_soft
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24_soft
-datafrom=dpy24_soft
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24_soft
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24_soft
+#datafrom=dpy24_soft
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_mfcc_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_mfcc_20
