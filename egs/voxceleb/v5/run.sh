@@ -48,7 +48,7 @@ datafrom=py24
 # datafrom=mfcc_dnn
 
 
-vox1_trials=${test}/trials_h
+vox1_trials=${test}/trials_e
 stage=6
 
 if [ $stage -le 0 ]; then
