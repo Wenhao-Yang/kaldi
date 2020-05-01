@@ -27,17 +27,17 @@ vaddir=`pwd`/data/vad
 # train=data/train
 # test=data/test
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
-#datafrom=py24
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_fb24
+datafrom=py24_512
 
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24
 #datafrom=py24_dnn
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24_soft
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24_soft
-datafrom=dpy24_soft
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/dev_dfb24_soft
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/Vox1_pyfb/test_dfb24_soft
+#datafrom=dpy24_soft
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/train_mfcc_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/vox1/test_mfcc_20
@@ -48,8 +48,8 @@ datafrom=dpy24_soft
 # datafrom=mfcc_dnn
 
 
-vox1_trials=${test}/trials_e
-stage=6
+vox1_trials=${test}/trials
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
@@ -87,7 +87,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 1024 \
+    ${train} 512 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
