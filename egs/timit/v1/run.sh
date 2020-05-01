@@ -42,9 +42,9 @@ timit_root=/data/timit
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_vart
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_vart
-datafrom=dpy24_vart
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_wei
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_wei
+datafrom=dpy24_wei
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_mdv
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_mdv
 #datafrom=dpy24_mdv
@@ -117,7 +117,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 640 \
+    ${train} 256 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -317,8 +317,10 @@ fi
 #minDCF(p-target=0.001): 0.9068
 
 #py24 with mean weight from var 640 GMMs 128
-
-
+#train classifier weight
+#EER: 4.22%
+#minDCF(p-target=0.01): 0.5967
+#minDCF(p-target=0.001): 0.8987
 #train verification weight
 #EER: 4.471%
 #minDCF(p-target=0.01): 0.5947
