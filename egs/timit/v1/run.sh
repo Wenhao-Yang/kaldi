@@ -39,9 +39,9 @@ timit_root=/data/timit
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_afb24
 #datafrom=apy24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
-datafrom=dpy24_fix
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_fix
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
+#datafrom=dpy24_fix
 
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_wei
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_wei
@@ -53,9 +53,9 @@ datafrom=dpy24_fix
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb30
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb30
 #datafrom=py30
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_var
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_var
-#datafrom=dpy30_var
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_var
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_var
+datafrom=dpy30_var
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_fix
 #datafrom=dpy30_fix
@@ -216,6 +216,7 @@ fi
 #minDCF(p-target=0.001): 0.8286
 
 
+
 #20200425 20:40
 #linear py24
 # 640 GMMs 128
@@ -259,6 +260,7 @@ fi
 
 
 
+
 #20200425 21:19
 #py24 with mean/std-min weight from fix 512GMMs 128
 #EER: 3.783%
@@ -297,6 +299,10 @@ fi
 #minDCF(p-target=0.01): 0.4039
 #minDCF(p-target=0.001): 0.6152
 
+# 128 GMMs 128
+#EER: 2.646%
+#minDCF(p-target=0.01): 0.3751
+#minDCF(p-target=0.001): 0.6869
 
 
 #20200425 20:17
@@ -357,3 +363,8 @@ fi
 # EER: 2.778%
 #minDCF(p-target=0.01): 0.3823
 #minDCF(p-target=0.001): 0.6537
+
+#py24 with mean weight from var 128 GMMs 128
+#EER: 2.632%
+#minDCF(p-target=0.01): 0.3360
+#minDCF(p-target=0.001): 0.6140
