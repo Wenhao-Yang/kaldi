@@ -43,6 +43,10 @@ timit_root=/data/timit
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
 
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_var
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_var
+datafrom=dpy24_var
+
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb24_wei
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb24_wei
 #datafrom=dpy24_wei
@@ -53,9 +57,9 @@ timit_root=/data/timit
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb30
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb30
 #datafrom=py30
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_var
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_var
-datafrom=dpy30_var
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_var
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_var
+#datafrom=dpy30_var
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_dfb30_fix
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_dfb30_fix
 #datafrom=dpy30_fix
@@ -322,6 +326,16 @@ fi
 #minDCF(p-target=0.01): 0.4636
 #minDCF(p-target=0.001): 0.9244
 
+#p30 128 GMMs 128
+#EER: 2.632%
+#minDCF(p-target=0.01): 0.3360
+#minDCF(p-target=0.001): 0.6140
+
+#dp30 128 GMMs 128
+#EER: 2.606%
+#minDCF(p-target=0.01): 0.3710
+#minDCF(p-target=0.001): 0.6195
+
 #20200425 20:40
 ##py30 with mean weight from fix 512GMMs 128
 #EER: 4.153%
@@ -364,7 +378,3 @@ fi
 #minDCF(p-target=0.01): 0.3823
 #minDCF(p-target=0.001): 0.6537
 
-#py24 with mean weight from var 128 GMMs 128
-#EER: 2.632%
-#minDCF(p-target=0.01): 0.3360
-#minDCF(p-target=0.001): 0.6140
