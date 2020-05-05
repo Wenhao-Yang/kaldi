@@ -145,7 +145,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 3 \
-    --ivector-dim 128 --num-iters 5 \
+    --ivector-dim 256 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
 fi
