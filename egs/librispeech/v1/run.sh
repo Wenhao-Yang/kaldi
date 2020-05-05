@@ -53,7 +53,7 @@ datafrom=dpy24_fix_f1
 
 libri_trials=${test}/trials
 
-stage=2
+stage=1
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
