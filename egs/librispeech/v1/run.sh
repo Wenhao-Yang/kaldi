@@ -29,6 +29,11 @@ libri_root=/data/libri
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
 #datafrom=py24
+
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_lfb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_lfb24
+datafrom=lpy24
+
 #
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_64
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_64
@@ -38,9 +43,9 @@ libri_root=/data/libri
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix
 #datafrom=dpy24_fix
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_fix_f1
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix_f1
-datafrom=dpy24_fix_f1
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_fix_f1
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_dfb24_fix_f1
+#datafrom=dpy24_fix_f1
 
 # train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/train_mfcc_20
 # test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_mfcc_20
