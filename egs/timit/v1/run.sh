@@ -122,7 +122,7 @@ if [ $stage -le 2 ]; then
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
     --nj 12 --num-threads 8 \
-    ${train} 128 \
+    ${train} 256 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
   sid/train_full_ubm.sh --cmd "$train_cmd --mem 8G" \
@@ -145,7 +145,7 @@ if [ $stage -le 3 ]; then
   #   data/train data/train_100k
   # # Train the i-vector extractor.
   sid/train_ivector_extractor.sh --cmd "$train_cmd" --nj 4 --num-processes 2 --num-threads 3 \
-    --ivector-dim 256 --num-iters 5 \
+    --ivector-dim 128 --num-iters 5 \
     exp/full_ubm_${datafrom}/final.ubm ${train} \
     exp/extractor_${datafrom}
 fi
@@ -390,3 +390,10 @@ fi
 #EER: 2.817%
 #minDCF(p-target=0.01): 0.3910
 #minDCF(p-target=0.001): 0.6361
+
+
+#dpy24 with mean weight from var 128 GMMs 128
+#filter weight compute refined
+#EER: 2.487%
+#minDCF(p-target=0.01): 0.3330
+#minDCF(p-target=0.001): 0.5872
