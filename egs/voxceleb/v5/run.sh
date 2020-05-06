@@ -48,8 +48,8 @@ datafrom=dpy24_soft
 # datafrom=mfcc_dnn
 
 
-vox1_trials=${test}/trials
-stage=1
+vox1_trials=${test}/trials_e
+stage=6
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
