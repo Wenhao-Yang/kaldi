@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/kaldi.iml" filepath="$PROJECT_DIR$/.idea/kaldi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../lstm_speaker_verification/.idea/lstm_speaker_verification.iml" filepath="$PROJECT_DIR$/../lstm_speaker_verification/.idea/lstm_speaker_verification.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pytorch-center-loss/.idea/pytorch-center-loss.iml" filepath="$PROJECT_DIR$/../pytorch-center-loss/.idea/pytorch-center-loss.iml" />
+    </modules>
+  </component>
+</project>
