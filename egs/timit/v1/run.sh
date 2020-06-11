@@ -219,6 +219,10 @@ fi
 #minDCF(p-target=0.01): 0.4211
 #minDCF(p-target=0.001): 0.8286
 
+# 128 GMMs 128
+#EER: 2.646%
+#minDCF(p-target=0.01): 0.3751
+#minDCF(p-target=0.001): 0.6869
 
 
 #20200425 20:40
@@ -309,10 +313,7 @@ fi
 #minDCF(p-target=0.01): 0.3821
 #minDCF(p-target=0.001): 0.6236
 
-# 128 GMMs 128
-#EER: 2.646%
-#minDCF(p-target=0.01): 0.3751
-#minDCF(p-target=0.001): 0.6869
+
 
 
 #20200425 20:17
