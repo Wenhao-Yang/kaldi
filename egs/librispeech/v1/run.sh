@@ -26,13 +26,13 @@ libri_root=/data/libri
 
 #/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/test_fb24_dnn_new
 
-#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
-#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
-#datafrom=py24
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_fb24
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_fb24
+datafrom=py24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_lfb24
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_lfb24
-datafrom=lpy24
+#train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_lfb24
+#test=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/test_lfb24
+#datafrom=lpy24
 
 #
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/libri/pyfb/dev_dfb24_64
@@ -56,9 +56,9 @@ datafrom=lpy24
 # datafrom=mfcc_dnn
 
 
-libri_trials=${test}/trials
+libri_trials=${test}/trials.2
 
-stage=1
+stage=6
 
 if [ $stage -le 0 ]; then
   # if [ ! -d ${train} ]; then
