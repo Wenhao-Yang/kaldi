@@ -34,7 +34,7 @@ frames_per_iter=10000000 # target number of frames per archive.
 
 frames_per_iter_diagnostic=100000 # have this many frames per archive for
                                    # the archives used for diagnostics.
-                                  # 用于诊断的帧？
+                                  # 用于测试的帧？
 
 num_diagnostic_archives=3  # we want to test the training likelihoods
                            # on a range of utterance lengths, and this number controls
