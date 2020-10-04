@@ -126,7 +126,7 @@ if [ $stage -le 2 ]; then
   # 训练2048的diag GMM
   #
   sid/train_diag_ubm.sh --cmd "$train_cmd --mem 8G" \
-    --nj 12 --num-threads 8 \
+    --nj 12 --num-threads 6 \
     ${train} 128 \
     exp/diag_ubm_${datafrom}
   # 训练2048的full GMM
