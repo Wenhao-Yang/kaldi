@@ -36,9 +36,9 @@ timit_root=/data/timit
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_lfb24
 #datafrom=lpy24
 
-train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_fb24_power
-test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_fb24_power
-datafrom=fb24_power
+train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_mel
+test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_mel
+datafrom=mel
 
 #train=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/train_afb24
 #test=/home/yangwenhao/local/project/lstm_speaker_verification/data/timit/pyfb/test_afb24
