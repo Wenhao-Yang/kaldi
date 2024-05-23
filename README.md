@@ -1,4 +1,7 @@
+## Learning Kaldi Speech Recognition Toolkit
+
 [![Build Status](https://travis-ci.com/kaldi-asr/kaldi.svg?branch=master)](https://travis-ci.com/kaldi-asr/kaldi)
+
 Kaldi Speech Recognition Toolkit
 ================================
 
